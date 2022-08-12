@@ -49,5 +49,12 @@ bukkit {
     apiVersion = "1.13"
     description = "Explore and discover the most beautiful plots highlighted on your server"
     softDepend = listOf("PlotSquared")
-    version = version.toString()
+    version = project.version.toString()
+
+    commands {
+        register("featuredplots") {
+            description = "Plugin command"
+            aliases = listOf("fp")
+        }
+    }
 }

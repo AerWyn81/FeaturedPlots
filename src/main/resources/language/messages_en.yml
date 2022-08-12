@@ -1,0 +1,10 @@
+Prefix: '&3&lF&beatured&2&lP&alots &7»&r'
+
+Messages:
+  NoPermission: "%prefix% &cYou do not have permission to run this command"
+  ErrorCommand: "%prefix% &cError in the command. See usage in /fp help"
+  PlayerOnly: "%prefix% &cThis command can only be executed by a player"
+
+Help:
+  LineTop: "&7--------------------[ &e&lHelp &7]--------------------"
+  Help: "&3/fp help &8: &7&oDisplay this message"
