@@ -9,12 +9,14 @@ import org.bukkit.command.CommandSender;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.stream.Collectors;
 
 @HBAnnotations(command = "category", permission = "featuredplots.admin", args = {"add", "delete", "edit", "list"})
 public record CategoryCommand(FeaturedPlots main, LanguageHandler languageHandler) implements Cmd {
 
     private final static ArrayList<String> SUB_COMMANDS = new ArrayList<>(Arrays.asList("add", "delete", "edit", "list"));
+    private final static String CONFIRM_ARG = "--confirm";
 
     @Override
     public boolean perform(CommandSender sender, String[] args) {
@@ -32,7 +34,7 @@ public record CategoryCommand(FeaturedPlots main, LanguageHandler languageHandle
             return true;
         }
 
-        if (args.length != 3) {
+        if (args.length != 3 && Arrays.stream(args).noneMatch(a -> a.equals(CONFIRM_ARG))) {
             sender.sendMessage(languageHandler.getMessage("Messages.ErrorCommand"));
             return true;
         }
@@ -48,7 +50,17 @@ public record CategoryCommand(FeaturedPlots main, LanguageHandler languageHandle
                 case "delete" -> {
                     var category = main.getCategoryHandler().getCategoryByName(name);
                     if (category == null) {
-                        sender.sendMessage(languageHandler.getMessage("Messages.CategoryNotExist"));
+                        sender.sendMessage(languageHandler.getMessage("Messages.CategoryNotExist")
+                                .replaceAll("%category%", name));
+                        return true;
+                    }
+
+                    int plotCount = category.getPlots().size();
+
+                    if (args.length != 4 && plotCount > 0) {
+                        sender.sendMessage(languageHandler.getMessage("Messages.CategoryDeleteConfirmation")
+                                .replaceAll("%category%", name)
+                                .replaceAll("%plots%", String.valueOf(plotCount)));
                         return true;
                     }
 
@@ -78,6 +90,9 @@ public record CategoryCommand(FeaturedPlots main, LanguageHandler languageHandle
                     .filter(arg -> arg.startsWith(args[2]))
                     .collect(Collectors.toCollection(ArrayList::new));
         }
+
+        if (args.length == 4 && !args[2].isEmpty() && args[1].equals("delete"))
+            return new ArrayList<>(Collections.singletonList(CONFIRM_ARG));
 
         return new ArrayList<>();
     }

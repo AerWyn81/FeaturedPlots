@@ -6,9 +6,10 @@ Messages:
   PlayerOnly: "%prefix% &cThis command can only be executed by a player"
   CategoryCreated: "%prefix% &aCategory &e%category% &acreated"
   CategoryDeleted: "%prefix% &cCategory &e%category% &cdeleted"
+  CategoryDeleteConfirmation: "%prefix% &cCategory &e%category% &ccontains &e%plots% &cplots. Confirm the deletion by adding &e--confirm &cto the previous command"
   CategoryList: "%prefix% &aCategories: "
   CategoryListEmpty: "%prefix% &cThere is no category"
-  CategoryNotExist: "%prefix% &cCategory %category% does not exist"
+  CategoryNotExist: "%prefix% &cCategory &e%category% &cdoes not exist"
 
 Help:
   LineTop: "&7--------------------[ &e&lHelp &7]--------------------"
