@@ -8,6 +8,7 @@ Messages:
   CategoryDeleted: "%prefix% &cCatégorie &e%category% &csupprimée"
   CategoryList: "%prefix% &aCatégories : "
   CategoryListEmpty: "%prefix% &cIl n'y a aucune catégorie"
+  CategoryNotExist: "%prefix% &cLa catégorie %category% n'existe pas"
 
 Help:
   LineTop: "&7--------------------[ &e&lAide &7]--------------------"

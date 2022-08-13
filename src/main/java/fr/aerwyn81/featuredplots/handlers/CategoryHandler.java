@@ -7,8 +7,10 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class CategoryHandler {
 
@@ -25,6 +27,15 @@ public class CategoryHandler {
 
     public ArrayList<Category> getCategories() {
         return categories;
+    }
+
+    public ArrayList<String> getCategoriesNames() {
+        return categories.stream().map(Category::getName).collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    @Nullable
+    public Category getCategoryByName(String name) {
+        return categories.stream().filter(c -> c.getName().equals(name)).findFirst().orElse(null);
     }
 
     public void loadCategories() {
@@ -59,26 +70,15 @@ public class CategoryHandler {
         }
 
         var category = new Category(name);
-        category.addIntoConfig(config);
 
+        category.addIntoConfig(config);
         config.save(configFile);
 
         this.categories.add(category);
     }
 
-    public void delete(String name) throws Exception {
-        if (name.isEmpty()) {
-            throw new Exception("Category name cannot be empty");
-        }
-
-        var optCategory = categories.stream().filter(c -> c.getName().equals(name)).findFirst();
-
-        if (optCategory.isEmpty())
-            throw new Exception("Category with name " + name + " does not exist");
-
-        var category = optCategory.get();
+    public void delete(Category category) throws Exception {
         category.removeFromConfig(config);
-
         config.save(configFile);
 
         categories.remove(category);

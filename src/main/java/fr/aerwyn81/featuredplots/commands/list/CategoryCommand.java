@@ -43,14 +43,17 @@ public record CategoryCommand(FeaturedPlots main, LanguageHandler languageHandle
             switch (args[1]) {
                 case "add" -> {
                     main.getCategoryHandler().create(name);
-                    sender.sendMessage(MessageUtils.colorize(languageHandler.getMessage("Messages.CategoryCreated")
-                            .replaceAll("%category%", name)));
+                    sender.sendMessage(languageHandler.getMessage("Messages.CategoryCreated").replaceAll("%category%", name));
                 }
                 case "delete" -> {
-                    //Todo: Add confirm message
-                    main.getCategoryHandler().delete(name);
-                    sender.sendMessage(MessageUtils.colorize(languageHandler.getMessage("Messages.CategoryDeleted")
-                            .replaceAll("%category%", name)));
+                    var category = main.getCategoryHandler().getCategoryByName(name);
+                    if (category == null) {
+                        sender.sendMessage(languageHandler.getMessage("Messages.CategoryNotExist"));
+                        return true;
+                    }
+
+                    main.getCategoryHandler().delete(category);
+                    sender.sendMessage(languageHandler.getMessage("Messages.CategoryDeleted").replaceAll("%category%", name));
                 }
                 case "edit" -> sender.sendMessage(languageHandler.getPrefix() + " &cThis sub command is not yet available");
                 default -> sender.sendMessage(languageHandler.getMessage("Messages.ErrorCommand"));
@@ -64,8 +67,18 @@ public record CategoryCommand(FeaturedPlots main, LanguageHandler languageHandle
 
     @Override
     public ArrayList<String> tabComplete(CommandSender sender, String[] args) {
-        return args.length == 2 ? SUB_COMMANDS.stream()
-                .filter(arg -> arg.startsWith(args[1].toLowerCase()))
-                .collect(Collectors.toCollection(ArrayList::new)) : new ArrayList<>();
+        if (args.length == 2) {
+            return SUB_COMMANDS.stream()
+                    .filter(arg -> arg.startsWith(args[1].toLowerCase()))
+                    .collect(Collectors.toCollection(ArrayList::new));
+        }
+
+        if (args.length == 3 && args[1].equals("delete")) {
+            return main.getCategoryHandler().getCategoriesNames().stream()
+                    .filter(arg -> arg.startsWith(args[2]))
+                    .collect(Collectors.toCollection(ArrayList::new));
+        }
+
+        return new ArrayList<>();
     }
 }
