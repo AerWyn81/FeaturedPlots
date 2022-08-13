@@ -2,6 +2,7 @@ package fr.aerwyn81.featuredplots;
 
 import com.plotsquared.core.PlotAPI;
 import fr.aerwyn81.featuredplots.commands.HBCommandExecutor;
+import fr.aerwyn81.featuredplots.handlers.CategoryHandler;
 import fr.aerwyn81.featuredplots.handlers.ConfigHandler;
 import fr.aerwyn81.featuredplots.handlers.LanguageHandler;
 import fr.aerwyn81.featuredplots.utils.MessageUtils;
@@ -21,6 +22,7 @@ public final class FeaturedPlots extends JavaPlugin {
 
     private ConfigHandler configHandler;
     private LanguageHandler languageHandler;
+    private CategoryHandler categoryHandler;
 
     private PlotAPI plotSquaredAPI;
 
@@ -47,6 +49,8 @@ public final class FeaturedPlots extends JavaPlugin {
             log.sendMessage(MessageUtils.colorize("&cPlotSquared required to run this plugin! Disabling..."));
             this.setEnabled(false);
             return;
+        } else {
+            this.plotSquaredAPI = new PlotAPI();
         }
 
         this.configHandler = new ConfigHandler(configFile);
@@ -55,9 +59,12 @@ public final class FeaturedPlots extends JavaPlugin {
         this.languageHandler = new LanguageHandler(this, configHandler.getLanguage());
         this.languageHandler.pushMessages();
 
-        this.plotSquaredAPI = new PlotAPI();
+        this.categoryHandler = new CategoryHandler(this);
+        this.categoryHandler.loadCategories();
 
         getCommand("featuredplots").setExecutor(new HBCommandExecutor(this));
+
+        log.sendMessage(MessageUtils.colorize("&3&lF&beatured&2&lP&alots &einitialized!"));
     }
 
     @Override
@@ -75,6 +82,10 @@ public final class FeaturedPlots extends JavaPlugin {
 
     public LanguageHandler getLanguageHandler() {
         return languageHandler;
+    }
+
+    public CategoryHandler getCategoryHandler() {
+        return categoryHandler;
     }
 
     public PlotAPI getPlotSquaredAPI() {

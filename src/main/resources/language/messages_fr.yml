@@ -4,6 +4,10 @@ Messages:
   NoPermission: "%prefix% &cVous n'avez pas la permission d'éxécuter cette commande"
   ErrorCommand: "%prefix% &cErreur dans la commande. Vérifiez avec /fp help"
   PlayerOnly: "%prefix% &cCette commande ne peut être exécutée que par un joueur"
+  CategoryCreated: "%prefix% &aCatégorie &e%category% &acréée"
+  CategoryDeleted: "%prefix% &cCatégorie &e%category% &csupprimée"
+  CategoryList: "%prefix% &aCatégories : "
+  CategoryListEmpty: "%prefix% &cIl n'y a aucune catégorie"
 
 Help:
   LineTop: "&7--------------------[ &e&lAide &7]--------------------"

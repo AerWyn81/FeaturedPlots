@@ -9,6 +9,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,7 +43,7 @@ public class HBCommandExecutor implements CommandExecutor, TabCompleter {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command c, String s, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command c, @NotNull String s, String[] args) {
         if (args.length <= 0) {
             sender.sendMessage(languageHandler.getMessage("Messages.ErrorCommand"));
             return false;
@@ -67,7 +68,7 @@ public class HBCommandExecutor implements CommandExecutor, TabCompleter {
 
         String[] argsWithoutCmd = Arrays.copyOfRange(args, 1, args.length);
 
-        if (argsWithoutCmd.length < command.getArgs().length) {
+        if (Arrays.stream(command.getArgs()).noneMatch(a -> Arrays.asList(argsWithoutCmd).contains(a))) {
             sender.sendMessage(languageHandler.getMessage("Messages.ErrorCommand"));
             return false;
         }
@@ -76,7 +77,7 @@ public class HBCommandExecutor implements CommandExecutor, TabCompleter {
     }
 
     @Override
-    public ArrayList<String> onTabComplete(CommandSender sender, Command c, String s, String[] args) {
+    public ArrayList<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command c, @NotNull String s, String[] args) {
         if (args.length == 1) {
             return registeredCommands.keySet().stream()
                     .filter(arg -> arg.startsWith(args[0].toLowerCase()))
