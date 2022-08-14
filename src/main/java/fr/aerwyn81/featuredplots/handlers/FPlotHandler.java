@@ -1,7 +1,5 @@
 package fr.aerwyn81.featuredplots.handlers;
 
-import com.plotsquared.core.PlotSquared;
-import com.plotsquared.core.player.PlotPlayer;
 import com.plotsquared.core.plot.Plot;
 import fr.aerwyn81.featuredplots.FeaturedPlots;
 import fr.aerwyn81.featuredplots.data.Category;
@@ -28,11 +26,11 @@ public class FPlotHandler extends ConfigFileHandler {
 
     @Nullable
     public FPlot getPlotsById(String plotId) {
-        return plots.stream().filter(p -> p.getPlot().getId().toDashSeparatedString().equals(plotId)).findFirst().orElse(null);
+        return getPlots().stream().filter(p -> p.getPlot().getId().toDashSeparatedString().equals(plotId)).findFirst().orElse(null);
     }
 
     public ArrayList<FPlot> getPlotsByWorld(String worldName) {
-        return plots.stream().filter(p -> p.getConfigWorld().equals(worldName)).collect(Collectors.toCollection(ArrayList::new));
+        return getPlots().stream().filter(p -> p.getConfigWorld().equals(worldName)).collect(Collectors.toCollection(ArrayList::new));
     }
 
     public void loadPlots() {
@@ -48,44 +46,14 @@ public class FPlotHandler extends ConfigFileHandler {
             ConfigurationSection configSection = config.getConfigurationSection("plots." + plot);
 
             try {
-                var loadedPlot = FPlot.loadFromConfig(configSection);
-
-                var category = main.getCategoryHandler().getCategoryByName(loadedPlot.getConfigCategory());
-                if (category != null) {
-                    loadedPlot.setCategory(category);
-                }
-
-                this.plots.add(loadedPlot);
+                this.plots.add(FPlot.loadFromConfig(configSection));
             } catch (Exception ex) {
                 FeaturedPlots.log.sendMessage(MessageUtils.colorize("&cCannot load " + plot + " category: " + ex.getMessage()));
             }
         });
     }
 
-    public void create(@Nullable Plot plot, Category category) throws Exception {
-        if (plot == null) {
-            throw new Exception("Plot location not found");
-        }
-
-        PlotPlayer<?> plotPlayer = PlotSquared.platform().playerManager().getPlayerIfExists(plot.getOwnerAbs());
-        if (plotPlayer == null && !plot.hasOwner()) {
-            throw new Exception("Plot has no owner");
-        }
-
-        var plotFound = getPlotsById(plot.getId().toDashSeparatedString());
-        if (plotFound != null) {
-            throw new Exception("This plot already exist in category " + plotFound.getCategory().getName());
-        }
-
-        String name;
-        if (plotPlayer == null) {
-            name = "UnknownPlayer";
-        } else {
-            name = main.getLanguageHandler().getMessageWithoutColoring("Config.PlotDefaultName")
-                    .replaceAll("%plotId%", plot.getId().toDashSeparatedString())
-                    .replaceAll("%player%", plotPlayer.getName());
-        }
-
+    public void create(String name, @Nullable Plot plot, Category category) throws Exception {
         var fPlot = new FPlot(name, plot, category);
         fPlot.addIntoConfig(config);
         saveConfig();

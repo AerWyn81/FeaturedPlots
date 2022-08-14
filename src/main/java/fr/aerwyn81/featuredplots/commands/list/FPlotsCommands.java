@@ -22,7 +22,7 @@ public record FPlotsCommands(FeaturedPlots main, LanguageHandler languageHandler
     @Override
     public boolean perform(CommandSender sender, String[] args) {
         if (args.length != 3) {
-            sender.sendMessage(String.format("%s \n %s", languageHandler.getMessage("Help.CommandUsage"), languageHandler.getMessage("Help.Plot")));
+            sender.sendMessage(String.format("%s \n%s", languageHandler.getMessage("Help.CommandUsage"), languageHandler.getMessage("Help.Plot")));
             return true;
         }
 
@@ -32,14 +32,14 @@ public record FPlotsCommands(FeaturedPlots main, LanguageHandler languageHandler
             switch (args[1]) {
                 case "add" -> {
                     var catName = args[2];
-                    var category = main.getCategoryHandler().getCategoryByName(catName);
+                    var category = main.getFeaturedPlotsManager().getCategoryHandler().getCategoryByName(catName);
                     if (category == null) {
                         sender.sendMessage(languageHandler.getMessage("Messages.CategoryNotExist")
                                 .replaceAll("%category%", catName));
                         return true;
                     }
 
-                    main.getFPlotHandler().create(Plot.getPlot(BukkitUtil.adapt(player.getLocation())), category);
+                    main.getFeaturedPlotsManager().createPlot(Plot.getPlot(BukkitUtil.adapt(player.getLocation())), category);
 
                     sender.sendMessage(languageHandler.getMessage("Messages.PlotAddedCategory")
                             .replaceAll("%category%", category.getName()));
@@ -63,7 +63,7 @@ public record FPlotsCommands(FeaturedPlots main, LanguageHandler languageHandler
         }
 
         if (args.length == 3 && args[1].equals("add")) {
-            return main.getCategoryHandler().getCategoriesNames().stream()
+            return main.getFeaturedPlotsManager().getCategoryHandler().getCategoriesNames().stream()
                     .filter(arg -> arg.startsWith(args[2]))
                     .collect(Collectors.toCollection(ArrayList::new));
         }

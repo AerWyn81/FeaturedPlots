@@ -3,10 +3,9 @@ package fr.aerwyn81.featuredplots;
 import com.plotsquared.core.PlotAPI;
 import fr.aerwyn81.featuredplots.commands.FPCommandExecutor;
 import fr.aerwyn81.featuredplots.events.OnWorldEvent;
-import fr.aerwyn81.featuredplots.handlers.CategoryHandler;
 import fr.aerwyn81.featuredplots.handlers.ConfigHandler;
-import fr.aerwyn81.featuredplots.handlers.FPlotHandler;
 import fr.aerwyn81.featuredplots.handlers.LanguageHandler;
+import fr.aerwyn81.featuredplots.managers.FeaturedPlotsManager;
 import fr.aerwyn81.featuredplots.utils.chat.MessageUtils;
 import fr.aerwyn81.featuredplots.utils.config.ConfigUpdater;
 import org.bukkit.Bukkit;
@@ -24,8 +23,8 @@ public final class FeaturedPlots extends JavaPlugin {
 
     private ConfigHandler configHandler;
     private LanguageHandler languageHandler;
-    private CategoryHandler categoryHandler;
-    private FPlotHandler fPlotHandler;
+
+    private FeaturedPlotsManager featuredPlotsManager;
 
     private PlotAPI plotSquaredAPI;
 
@@ -62,11 +61,8 @@ public final class FeaturedPlots extends JavaPlugin {
         this.languageHandler = new LanguageHandler(this, configHandler.getLanguage());
         this.languageHandler.pushMessages();
 
-        this.categoryHandler = new CategoryHandler(this);
-        this.categoryHandler.loadCategories();
-
-        this.fPlotHandler = new FPlotHandler(this);
-        this.fPlotHandler.loadPlots();
+        this.featuredPlotsManager = new FeaturedPlotsManager(this);
+        this.featuredPlotsManager.loadStorage();
 
         getCommand("featuredplots").setExecutor(new FPCommandExecutor(this));
 
@@ -92,12 +88,8 @@ public final class FeaturedPlots extends JavaPlugin {
         return languageHandler;
     }
 
-    public CategoryHandler getCategoryHandler() {
-        return categoryHandler;
-    }
-
-    public FPlotHandler getFPlotHandler() {
-        return fPlotHandler;
+    public FeaturedPlotsManager getFeaturedPlotsManager() {
+        return featuredPlotsManager;
     }
 
     public PlotAPI getPlotSquaredAPI() {

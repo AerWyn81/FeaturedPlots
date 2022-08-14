@@ -22,11 +22,11 @@ public class CategoryHandler extends ConfigFileHandler {
     }
 
     public ArrayList<String> getCategoriesNames() {
-        return categories.stream().map(Category::getName).collect(Collectors.toCollection(ArrayList::new));
+        return getCategories().stream().map(Category::getName).collect(Collectors.toCollection(ArrayList::new));
     }
 
     public Category getCategoryByName(String name) {
-        return categories.stream().filter(c -> c.getName().equals(name)).findFirst().orElse(null);
+        return getCategories().stream().filter(c -> c.getName().equals(name)).findFirst().orElse(null);
     }
 
     public void loadCategories() {
@@ -50,14 +50,6 @@ public class CategoryHandler extends ConfigFileHandler {
     }
 
     public void create(String name) throws Exception {
-        if (name.isEmpty()) {
-            throw new Exception("Category name cannot be empty");
-        }
-
-        if (getCategoryByName(name) != null) {
-            throw new Exception("Category " + name + " already exist");
-        }
-
         var category = new Category(name);
 
         category.addIntoConfig(config);

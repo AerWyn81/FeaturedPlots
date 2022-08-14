@@ -21,7 +21,7 @@ public record CategoryCommands(FeaturedPlots main, LanguageHandler languageHandl
     @Override
     public boolean perform(CommandSender sender, String[] args) {
         if (args[1].equals("list")) {
-            var categories = main.getCategoryHandler().getCategories();
+            var categories = main.getFeaturedPlotsManager().getCategoryHandler().getCategories();
 
             if (categories.size() == 0) {
                 sender.sendMessage(languageHandler.getMessage("Messages.CategoryListEmpty"));
@@ -35,7 +35,7 @@ public record CategoryCommands(FeaturedPlots main, LanguageHandler languageHandl
         }
 
         if (args.length != 3 && Arrays.stream(args).noneMatch(a -> a.equals(CONFIRM_ARG))) {
-            sender.sendMessage(String.format("%s \n %s", languageHandler.getMessage("Help.CommandUsage"), languageHandler.getMessage("Help.Category")));
+            sender.sendMessage(String.format("%s \n%s", languageHandler.getMessage("Help.CommandUsage"), languageHandler.getMessage("Help.Category")));
             return true;
         }
 
@@ -44,11 +44,12 @@ public record CategoryCommands(FeaturedPlots main, LanguageHandler languageHandl
         try {
             switch (args[1]) {
                 case "add" -> {
-                    main.getCategoryHandler().create(name);
-                    sender.sendMessage(languageHandler.getMessage("Messages.CategoryCreated").replaceAll("%category%", name));
+                    main.getFeaturedPlotsManager().createCategory(name);
+                    sender.sendMessage(languageHandler.getMessage("Messages.CategoryCreated")
+                            .replaceAll("%category%", name));
                 }
                 case "delete" -> {
-                    var category = main.getCategoryHandler().getCategoryByName(name);
+                    var category = main.getFeaturedPlotsManager().getCategoryHandler().getCategoryByName(name);
                     if (category == null) {
                         sender.sendMessage(languageHandler.getMessage("Messages.CategoryNotExist")
                                 .replaceAll("%category%", name));
@@ -64,8 +65,9 @@ public record CategoryCommands(FeaturedPlots main, LanguageHandler languageHandl
                         return true;
                     }
 
-                    main.getCategoryHandler().delete(category);
-                    sender.sendMessage(languageHandler.getMessage("Messages.CategoryDeleted").replaceAll("%category%", name));
+                    main.getFeaturedPlotsManager().deleteCategory(category);
+                    sender.sendMessage(languageHandler.getMessage("Messages.CategoryDeleted")
+                            .replaceAll("%category%", name));
                 }
                 case "edit" -> sender.sendMessage(languageHandler.getPrefix() + MessageUtils.colorize(" &cThis sub command is not yet available"));
                 default -> sender.sendMessage(languageHandler.getMessage("Messages.UnknownCommand"));
@@ -86,7 +88,7 @@ public record CategoryCommands(FeaturedPlots main, LanguageHandler languageHandl
         }
 
         if (args.length == 3 && args[1].equals("delete")) {
-            return main.getCategoryHandler().getCategoriesNames().stream()
+            return main.getFeaturedPlotsManager().getCategoryHandler().getCategoriesNames().stream()
                     .filter(arg -> arg.startsWith(args[2]))
                     .collect(Collectors.toCollection(ArrayList::new));
         }

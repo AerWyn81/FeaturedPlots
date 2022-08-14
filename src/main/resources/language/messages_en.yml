@@ -27,4 +27,4 @@ Help:
   LineTop: "&7--------------------[ &e&lHelp &7]--------------------"
   Help: "&3/fp help &8: &7&oDisplay this message"
   Category: "&3/fp category <list> or <add|delete|edit> <name> &8: &7&oManage categories"
-  Plot: "&3/fp plot <add> <name> &8: &7&oManage featured plots"
+  Plot: "&3/fp plot <add> <categoryName> &8: &7&oManage featured plots"

@@ -14,7 +14,7 @@ public record OnWorldEvent(FeaturedPlots main) implements Listener {
     public void OnWorldLoad(WorldLoadEvent e) {
         var worldName = e.getWorld().getName();
 
-        for (FPlot plot : main.getFPlotHandler().getPlotsByWorld(worldName)) {
+        for (FPlot plot : main.getFeaturedPlotsManager().getPlotHandler().getPlotsByWorld(worldName)) {
             var psPlot = Plot.fromString(null, worldName + ";" + plot.getConfigPlotId());
             if (psPlot == null) {
                 FeaturedPlots.log.sendMessage(MessageUtils.colorize(String.format("&3[FeaturedPlots] &cCannot find plot %s in the world %s", plot.getName(), plot.getConfigWorld())));

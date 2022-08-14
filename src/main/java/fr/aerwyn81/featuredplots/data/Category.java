@@ -22,6 +22,10 @@ public class Category extends Item {
         this(name, new ArrayList<>(), DEFAULT_ITEM_STACK);
     }
 
+    public static Category defaultCategory() {
+        return new Category("Unknown");
+    }
+
     public ArrayList<FPlot> getPlots() {
         return plots;
     }

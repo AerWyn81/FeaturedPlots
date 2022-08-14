@@ -6,7 +6,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 
 public class FPlot extends Item {
@@ -53,9 +52,8 @@ public class FPlot extends Item {
         return configCategory;
     }
 
-    @Nullable
     public Category getCategory() {
-        return category;
+        return category != null ? category : Category.defaultCategory();
     }
 
     public void setCategory(Category category) {
