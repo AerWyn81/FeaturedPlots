@@ -1,4 +1,4 @@
-package fr.aerwyn81.featuredplots.utils;
+package fr.aerwyn81.featuredplots.utils.chat;
 
 import net.md_5.bungee.api.ChatColor;
 

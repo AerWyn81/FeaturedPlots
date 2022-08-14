@@ -1,7 +1,9 @@
 package fr.aerwyn81.featuredplots.commands;
 
 import fr.aerwyn81.featuredplots.FeaturedPlots;
-import fr.aerwyn81.featuredplots.commands.list.CategoryCommand;
+import fr.aerwyn81.featuredplots.commands.list.CategoryCommands;
+import fr.aerwyn81.featuredplots.commands.list.FPlotsCommands;
+import fr.aerwyn81.featuredplots.commands.list.Help;
 import fr.aerwyn81.featuredplots.handlers.LanguageHandler;
 import fr.aerwyn81.featuredplots.utils.PlayerUtils;
 import org.bukkit.command.Command;
@@ -16,29 +18,30 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.stream.Collectors;
 
-public class HBCommandExecutor implements CommandExecutor, TabCompleter {
-    private final HashMap<String, HBCommand> registeredCommands;
+public class FPCommandExecutor implements CommandExecutor, TabCompleter {
+    private final HashMap<String, FPCommand> registeredCommands;
 
     private final LanguageHandler languageHandler;
-    //private final Help helpCommand;
+    private final Help helpCommand;
 
-    public HBCommandExecutor(FeaturedPlots main) {
+    public FPCommandExecutor(FeaturedPlots main) {
         this.languageHandler = main.getLanguageHandler();
         this.registeredCommands = new HashMap<>();
 
-        //this.helpCommand = new Help(main);
+        this.helpCommand = new Help(main);
 
-        //this.register(helpCommand);
-        this.register(new CategoryCommand(main, languageHandler));
+        this.register(helpCommand);
+        this.register(new CategoryCommands(main, languageHandler));
+        this.register(new FPlotsCommands(main, languageHandler));
     }
 
     private void register(Cmd c) {
-        HBCommand command = new HBCommand(c);
+        FPCommand command = new FPCommand(c);
 
         registeredCommands.put(command.getCommand(), command);
 
         if (command.isVisible()) {
-            //helpCommand.addCommand(command);
+            helpCommand.addCommand(command);
         }
     }
 
@@ -49,7 +52,7 @@ public class HBCommandExecutor implements CommandExecutor, TabCompleter {
             return false;
         }
 
-        HBCommand command = registeredCommands.get(args[0].toLowerCase());
+        FPCommand command = registeredCommands.get(args[0].toLowerCase());
 
         if (command == null) {
             sender.sendMessage(languageHandler.getMessage("Messages.ErrorCommand"));
@@ -68,7 +71,7 @@ public class HBCommandExecutor implements CommandExecutor, TabCompleter {
 
         String[] argsWithoutCmd = Arrays.copyOfRange(args, 1, args.length);
 
-        if (Arrays.stream(command.getArgs()).noneMatch(a -> Arrays.asList(argsWithoutCmd).contains(a))) {
+        if (command.getArgs().length > 0 && Arrays.stream(command.getArgs()).noneMatch(a -> Arrays.asList(argsWithoutCmd).contains(a))) {
             sender.sendMessage(languageHandler.getMessage("Messages.ErrorCommand"));
             return false;
         }
@@ -90,7 +93,7 @@ public class HBCommandExecutor implements CommandExecutor, TabCompleter {
             return new ArrayList<>();
         }
 
-        HBCommand command = registeredCommands.get(args[0].toLowerCase());
+        FPCommand command = registeredCommands.get(args[0].toLowerCase());
 
         if (!PlayerUtils.hasPermission(sender, command.getPermission())) {
             return new ArrayList<>();

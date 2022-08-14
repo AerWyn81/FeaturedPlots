@@ -1,6 +1,6 @@
 package fr.aerwyn81.featuredplots.commands;
 
-public class HBCommand {
+public class FPCommand {
     private final Cmd cmdClass;
     private final String command;
     private final String permission;
@@ -8,13 +8,13 @@ public class HBCommand {
     private final String[] args;
     private final boolean visible;
 
-    public HBCommand(Cmd command) {
+    public FPCommand(Cmd command) {
         this.cmdClass = command;
-        this.command = cmdClass.getClass().getAnnotation(HBAnnotations.class).command();
-        this.permission = cmdClass.getClass().getAnnotation(HBAnnotations.class).permission();
-        this.isPlayerCommand = cmdClass.getClass().getAnnotation(HBAnnotations.class).isPlayerCommand();
-        this.args = cmdClass.getClass().getAnnotation(HBAnnotations.class).args();
-        this.visible = cmdClass.getClass().getAnnotation(HBAnnotations.class).isVisible();
+        this.command = cmdClass.getClass().getAnnotation(FPAnnotations.class).command();
+        this.permission = cmdClass.getClass().getAnnotation(FPAnnotations.class).permission();
+        this.isPlayerCommand = cmdClass.getClass().getAnnotation(FPAnnotations.class).isPlayerCommand();
+        this.args = cmdClass.getClass().getAnnotation(FPAnnotations.class).args();
+        this.visible = cmdClass.getClass().getAnnotation(FPAnnotations.class).isVisible();
     }
 
     public Cmd getCmdClass() {

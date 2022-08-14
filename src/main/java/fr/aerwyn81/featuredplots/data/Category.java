@@ -12,16 +12,14 @@ public class Category extends Item {
 
     private static final ItemStack DEFAULT_ITEM_STACK = new ItemStack(Material.PODZOL);
 
-    public Category(String name) {
-        super(name, new ArrayList<>(), DEFAULT_ITEM_STACK);
-
-        this.plots = new ArrayList<>();
-    }
-
     public Category(String name, ArrayList<String> description, ItemStack icon) {
         super(name, description, icon);
 
         this.plots = new ArrayList<>();
+    }
+
+    public Category(String name) {
+        this(name, new ArrayList<>(), DEFAULT_ITEM_STACK);
     }
 
     public ArrayList<FPlot> getPlots() {
@@ -42,6 +40,11 @@ public class Category extends Item {
         var icon = section.getString("icon", Material.PODZOL.name());
 
         return new Category(name, description, new ItemStack(Material.valueOf(icon)));
+    }
+
+    public void addIntoConfig(FileConfiguration config) {
+        config.set("categories." + name + ".description", description);
+        config.set("categories." + name + ".icon", icon.getType().name());
     }
 
     public void removeFromConfig(FileConfiguration config) {

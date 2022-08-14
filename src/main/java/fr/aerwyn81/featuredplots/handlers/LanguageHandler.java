@@ -1,7 +1,7 @@
 package fr.aerwyn81.featuredplots.handlers;
 
 import fr.aerwyn81.featuredplots.FeaturedPlots;
-import fr.aerwyn81.featuredplots.utils.MessageUtils;
+import fr.aerwyn81.featuredplots.utils.chat.MessageUtils;
 import fr.aerwyn81.featuredplots.utils.config.ConfigUpdater;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -45,7 +45,11 @@ public class LanguageHandler {
     }
 
     public String getMessage(String message) {
-        return MessageUtils.colorize(messages.get(message).toString().replaceAll("%prefix%", getPrefix()));
+        return MessageUtils.colorize(getMessageWithoutColoring(message));
+    }
+
+    public String getMessageWithoutColoring(String message) {
+        return messages.get(message).toString().replaceAll("%prefix%", getPrefix());
     }
 
     public List<String> getMessages(String message) {

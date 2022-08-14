@@ -2,9 +2,9 @@ package fr.aerwyn81.featuredplots.commands.list;
 
 import fr.aerwyn81.featuredplots.FeaturedPlots;
 import fr.aerwyn81.featuredplots.commands.Cmd;
-import fr.aerwyn81.featuredplots.commands.HBAnnotations;
+import fr.aerwyn81.featuredplots.commands.FPAnnotations;
 import fr.aerwyn81.featuredplots.handlers.LanguageHandler;
-import fr.aerwyn81.featuredplots.utils.MessageUtils;
+import fr.aerwyn81.featuredplots.utils.chat.MessageUtils;
 import org.bukkit.command.CommandSender;
 
 import java.util.ArrayList;
@@ -12,8 +12,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.stream.Collectors;
 
-@HBAnnotations(command = "category", permission = "featuredplots.admin", args = {"add", "delete", "edit", "list"})
-public record CategoryCommand(FeaturedPlots main, LanguageHandler languageHandler) implements Cmd {
+@FPAnnotations(command = "category", permission = "featuredplots.admin", args = {"add", "delete", "edit", "list"})
+public record CategoryCommands(FeaturedPlots main, LanguageHandler languageHandler) implements Cmd {
 
     private final static ArrayList<String> SUB_COMMANDS = new ArrayList<>(Arrays.asList("add", "delete", "edit", "list"));
     private final static String CONFIRM_ARG = "--confirm";
@@ -35,7 +35,7 @@ public record CategoryCommand(FeaturedPlots main, LanguageHandler languageHandle
         }
 
         if (args.length != 3 && Arrays.stream(args).noneMatch(a -> a.equals(CONFIRM_ARG))) {
-            sender.sendMessage(languageHandler.getMessage("Messages.ErrorCommand"));
+            sender.sendMessage(String.format("%s \n %s", languageHandler.getMessage("Help.CommandUsage"), languageHandler.getMessage("Help.Category")));
             return true;
         }
 
@@ -67,8 +67,8 @@ public record CategoryCommand(FeaturedPlots main, LanguageHandler languageHandle
                     main.getCategoryHandler().delete(category);
                     sender.sendMessage(languageHandler.getMessage("Messages.CategoryDeleted").replaceAll("%category%", name));
                 }
-                case "edit" -> sender.sendMessage(languageHandler.getPrefix() + " &cThis sub command is not yet available");
-                default -> sender.sendMessage(languageHandler.getMessage("Messages.ErrorCommand"));
+                case "edit" -> sender.sendMessage(languageHandler.getPrefix() + MessageUtils.colorize(" &cThis sub command is not yet available"));
+                default -> sender.sendMessage(languageHandler.getMessage("Messages.UnknownCommand"));
             }
         } catch (Exception ex) {
             sender.sendMessage(languageHandler.getPrefix() + " " + MessageUtils.colorize("&c" + ex.getMessage()));

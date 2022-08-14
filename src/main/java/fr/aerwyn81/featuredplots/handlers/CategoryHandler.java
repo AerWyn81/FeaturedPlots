@@ -2,25 +2,17 @@ package fr.aerwyn81.featuredplots.handlers;
 
 import fr.aerwyn81.featuredplots.FeaturedPlots;
 import fr.aerwyn81.featuredplots.data.Category;
-import fr.aerwyn81.featuredplots.utils.MessageUtils;
+import fr.aerwyn81.featuredplots.utils.chat.MessageUtils;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 
-import javax.annotation.Nullable;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
-public class CategoryHandler {
-
-    private final File configFile;
-    private FileConfiguration config;
-
+public class CategoryHandler extends ConfigFileHandler {
     private ArrayList<Category> categories;
 
     public CategoryHandler(FeaturedPlots main) {
-        this.configFile = new File(main.getDataFolder(), "categories.yml");
+        super(main);
 
         categories = new ArrayList<>();
     }
@@ -33,15 +25,12 @@ public class CategoryHandler {
         return categories.stream().map(Category::getName).collect(Collectors.toCollection(ArrayList::new));
     }
 
-    @Nullable
     public Category getCategoryByName(String name) {
         return categories.stream().filter(c -> c.getName().equals(name)).findFirst().orElse(null);
     }
 
     public void loadCategories() {
-        config = YamlConfiguration.loadConfiguration(configFile);
-
-        this.categories.clear();
+        categories.clear();
 
         ConfigurationSection categories = config.getConfigurationSection("categories");
         if (categories == null) {
@@ -65,21 +54,21 @@ public class CategoryHandler {
             throw new Exception("Category name cannot be empty");
         }
 
-        if (categories.stream().anyMatch(c -> c.getName().equals(name))) {
-            throw new Exception("Category with name " + name + " already exist");
+        if (getCategoryByName(name) != null) {
+            throw new Exception("Category " + name + " already exist");
         }
 
         var category = new Category(name);
 
         category.addIntoConfig(config);
-        config.save(configFile);
+        saveConfig();
 
-        this.categories.add(category);
+        categories.add(category);
     }
 
     public void delete(Category category) throws Exception {
         category.removeFromConfig(config);
-        config.save(configFile);
+        saveConfig();
 
         categories.remove(category);
     }

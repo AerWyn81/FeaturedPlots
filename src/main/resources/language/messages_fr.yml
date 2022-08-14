@@ -3,6 +3,7 @@ Prefix: '&3&lF&beatured&2&lP&alots &7»&r'
 Messages:
   NoPermission: "%prefix% &cVous n'avez pas la permission d'éxécuter cette commande"
   ErrorCommand: "%prefix% &cErreur dans la commande. Vérifiez avec /fp help"
+  UnknownCommand: "%prefix% &cCommande inconnue. Écrivez /fp help pour afficher la liste des commandes"
   PlayerOnly: "%prefix% &cCette commande ne peut être exécutée que par un joueur"
   CategoryCreated: "%prefix% &aCatégorie &e%category% &acréée"
   CategoryDeleted: "%prefix% &cCatégorie &e%category% &csupprimée"
@@ -10,7 +11,20 @@ Messages:
   CategoryList: "%prefix% &aCatégories : "
   CategoryListEmpty: "%prefix% &cIl n'y a aucune catégorie"
   CategoryNotExist: "%prefix% &cLa catégorie &e%category% &cn'existe pas"
+  PlotAddedCategory: "%prefix% &aCette parcelle a été ajouté dans la catégorie &e%category%"
+
+Config:
+  PlotDefaultName: "&8[&7%plotId%&8] | &3Plot de &e%player%"
+
+Chat:
+  LineTitle: "&7-----------------[ &3&lF&beatured&2&lP&alots&7 ]----------------"
+  PreviousPage: "&7--------[&8<<<&7]--------"
+  NextPage: "&7--------[&8>>>&7]--------"
+  PageFooter: " &8[ &e%pageNumber%&7/&e%totalPage% &8] "
 
 Help:
+  CommandUsage: "%prefix% &7Utilisation de la commande : "
   LineTop: "&7--------------------[ &e&lAide &7]--------------------"
   Help: "&3/fp help &8: &7&oAffiche ce message"
+  Category: "&3/fp category <list> or <add|delete|edit> <name> &8: &7&oGérer les catégories"
+  Plot: "&3/fp plot <add> <name> &8: &7&oGérer les parcelles favorites"

@@ -17,6 +17,7 @@ dependencies {
     compileOnly("org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT")
     implementation(platform("com.intellectualsites.bom:bom-1.18.x:1.12"))
     compileOnly("com.plotsquared:PlotSquared-Core:6.9.3")
+    compileOnly("com.plotsquared:PlotSquared-Bukkit:6.9.3") { isTransitive = false }
 }
 
 tasks {
