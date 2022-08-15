@@ -12,6 +12,7 @@ Messages:
   CategoryListEmpty: "%prefix% &cIl n'y a aucune catégorie"
   CategoryNotExist: "%prefix% &cLa catégorie &e%category% &cn'existe pas"
   PlotAddedCategory: "%prefix% &aCette parcelle a été ajouté dans la catégorie &e%category%"
+  FeaturedPlotsEmpty: "%prefix% &cIl n'y a pas encore de parcelles en vedette"
 
 Config:
   PlotDefaultName: "&8[&7%plotId%&8] | &3Plot de &e%player%"
@@ -27,4 +28,5 @@ Help:
   LineTop: "&7--------------------[ &e&lAide &7]--------------------"
   Help: "&3/fp help &8: &7&oAffiche ce message"
   Category: "&3/fp category <list> or <add|delete|edit> <name> &8: &7&oGérer les catégories"
-  Plot: "&3/fp plot <add> <categoryName> &8: &7&oGérer les parcelles favorites"
+  Plot: "&3/fp plot <add> <categoryName> &8: &7&oGérer les parcelles vedettes"
+  Explore: "&3/fp explore (ou /plot explore) &8: &7&oExplorer les parcelles vedettes"

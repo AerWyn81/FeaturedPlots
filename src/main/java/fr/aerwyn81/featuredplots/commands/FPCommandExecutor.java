@@ -4,6 +4,7 @@ import fr.aerwyn81.featuredplots.FeaturedPlots;
 import fr.aerwyn81.featuredplots.commands.list.CategoryCommands;
 import fr.aerwyn81.featuredplots.commands.list.FPlotsCommands;
 import fr.aerwyn81.featuredplots.commands.list.Help;
+import fr.aerwyn81.featuredplots.commands.list.explore.ExploreCommand;
 import fr.aerwyn81.featuredplots.handlers.LanguageHandler;
 import fr.aerwyn81.featuredplots.utils.PlayerUtils;
 import org.bukkit.command.Command;
@@ -38,6 +39,7 @@ public class FPCommandExecutor implements CommandExecutor, TabCompleter {
         this.register(helpCommand);
         this.register(new CategoryCommands(main, languageHandler));
         this.register(new FPlotsCommands(main, languageHandler));
+        this.register(new ExploreCommand(main, languageHandler));
     }
 
     /**

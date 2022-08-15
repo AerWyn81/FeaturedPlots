@@ -12,6 +12,7 @@ Messages:
   CategoryListEmpty: "%prefix% &cThere is no category"
   CategoryNotExist: "%prefix% &cCategory &e%category% &cdoes not exist"
   PlotAddedCategory: "%prefix% &aPlot added to the &e%category% &acategory"
+  FeaturedPlotsEmpty: "%prefix% &cThere's not featured plots yet"
 
 Config:
   PlotDefaultName: "&8[&7%plotId%&8] | &3Plot of &e%player%"
@@ -28,3 +29,4 @@ Help:
   Help: "&3/fp help &8: &7&oDisplay this message"
   Category: "&3/fp category <list> or <add|delete|edit> <name> &8: &7&oManage categories"
   Plot: "&3/fp plot <add> <categoryName> &8: &7&oManage featured plots"
+  Explore: "&3/fp explore (or /plot explore) &8: &7&oExplore featured plots"
