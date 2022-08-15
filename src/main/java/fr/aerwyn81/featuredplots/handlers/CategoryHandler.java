@@ -27,7 +27,7 @@ public class CategoryHandler {
     /**
      * Used to retrieve all categories
      *
-     * @return List of {@link Category} object
+     * @return list of {@link Category} object
      */
     public ArrayList<Category> getCategories() {
         return categories;
@@ -36,23 +36,23 @@ public class CategoryHandler {
     /**
      * Used to retrieve all category names
      *
-     * @return List of {@link String} category name
+     * @return list of {@link String} category name
      */
     public ArrayList<String> getCategoriesNames() {
         return getCategories().stream().map(Category::getName).collect(Collectors.toCollection(ArrayList::new));
     }
 
     /**
-     * Used to find a Category by his name
+     * Used to find a {@link Category} by his name
      *
-     * @return A {@link Category} object
+     * @return a {@link Category} object
      */
     public Category getCategoryByName(String name) {
         return getCategories().stream().filter(c -> c.getName().equals(name)).findFirst().orElse(null);
     }
 
     /**
-     * Used to load all category in storage
+     * Used to load all category from storage
      */
     public void loadCategories() {
         categories.clear();
@@ -77,7 +77,7 @@ public class CategoryHandler {
     /**
      * Used to create a new Category
      *
-     * @param name {@link String} Name of the category
+     * @param name {@link String} name of the category
      * @return a {@link Category} object
      * @throws Exception if there is a storage issue
      */
@@ -92,7 +92,7 @@ public class CategoryHandler {
     }
 
     /**
-     * Used to remove a Category
+     * Used to remove a {@link Category}
      *
      * @param category {@link Category} Category to delete
      * @throws Exception if there is a storage issue
