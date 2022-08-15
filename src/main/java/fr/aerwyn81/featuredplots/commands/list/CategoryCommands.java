@@ -12,10 +12,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.stream.Collectors;
 
-@FPAnnotations(command = "category", permission = "featuredplots.admin", args = {"add", "delete", "edit", "list"})
+@FPAnnotations(command = "category", permission = "featuredplots.admin", args = {"create", "delete", "edit", "list"})
 public record CategoryCommands(FeaturedPlots main, LanguageHandler languageHandler) implements Cmd {
 
-    private final static ArrayList<String> SUB_COMMANDS = new ArrayList<>(Arrays.asList("add", "delete", "edit", "list"));
+    private final static ArrayList<String> SUB_COMMANDS = new ArrayList<>(Arrays.asList("create", "delete", "edit", "list"));
     private final static String CONFIRM_ARG = "--confirm";
 
     @Override
@@ -43,7 +43,7 @@ public record CategoryCommands(FeaturedPlots main, LanguageHandler languageHandl
 
         try {
             switch (args[1]) {
-                case "add" -> {
+                case "create" -> {
                     main.getFeaturedPlotsManager().createCategory(name);
                     sender.sendMessage(languageHandler.getMessage("Messages.CategoryCreated")
                             .replaceAll("%category%", name));

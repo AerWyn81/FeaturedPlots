@@ -14,6 +14,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Used to load and have in one place all the language keys
+ */
 @SuppressWarnings({"unchecked", "ResultOfMethodCallIgnored", "ConstantConditions"})
 public class LanguageHandler {
 

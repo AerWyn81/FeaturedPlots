@@ -5,6 +5,9 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 
+/**
+ * Used to load and have in one place all the config.yml keys
+ */
 public class ConfigHandler {
 
     private final File configFile;
