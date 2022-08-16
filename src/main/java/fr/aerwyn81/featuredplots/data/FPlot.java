@@ -2,6 +2,7 @@ package fr.aerwyn81.featuredplots.data;
 
 import com.plotsquared.core.plot.Plot;
 import fr.aerwyn81.featuredplots.managers.FeaturedPlotsManager;
+import fr.aerwyn81.featuredplots.utils.chat.MessageUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -44,6 +45,17 @@ public class FPlot extends Item {
      */
     public FPlot(String name, Plot plot, Category category) {
         this(name, new ArrayList<>(), new ItemStack(Material.PLAYER_HEAD), plot, category);
+    }
+
+
+    @Override
+    public String getNameColorized() {
+        return MessageUtils.colorize(name);
+    }
+
+    @Override
+    public ArrayList<String> getDescriptionColorized() {
+        return MessageUtils.colorize(description);
     }
 
     public String getConfigPlotId() {

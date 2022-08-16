@@ -1,6 +1,7 @@
 package fr.aerwyn81.featuredplots.data;
 
 import fr.aerwyn81.featuredplots.managers.FeaturedPlotsManager;
+import fr.aerwyn81.featuredplots.utils.chat.MessageUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -9,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 
 public class Category extends Item {
+    private String displayName;
     private final ArrayList<FPlot> plots;
 
     private static final ItemStack DEFAULT_ITEM_STACK = new ItemStack(Material.PODZOL);
@@ -16,7 +18,24 @@ public class Category extends Item {
     private Category(String name, ArrayList<String> description, ItemStack icon) {
         super(name, description, icon);
 
+        this.displayName = name;
         this.plots = new ArrayList<>();
+    }
+
+    @Override
+    public String getNameColorized() {
+        return MessageUtils.colorize(displayName);
+    }
+
+    @Override
+    public ArrayList<String> getDescriptionColorized() {
+        return MessageUtils.colorize(description);
+    }
+
+    private Category(String name, String displayName, ArrayList<String> description, ItemStack icon) {
+        this(name, description, icon);
+
+        this.displayName = displayName;
     }
 
     /**
@@ -26,6 +45,10 @@ public class Category extends Item {
      */
     public Category(String name) {
         this(name, new ArrayList<>(), DEFAULT_ITEM_STACK);
+    }
+
+    public String getDisplayName() {
+        return displayName;
     }
 
     /**
@@ -63,10 +86,11 @@ public class Category extends Item {
             throw new Exception("Name cannot be empty");
         }
 
+        var displayName = section.getString("name", name);
         var description = new ArrayList<>(section.getStringList("description"));
         var icon = section.getString("icon", Material.PODZOL.name());
 
-        return new Category(name, description, new ItemStack(Material.valueOf(icon)));
+        return new Category(name, displayName, description, new ItemStack(Material.valueOf(icon)));
     }
 
     /**
@@ -76,6 +100,7 @@ public class Category extends Item {
      * @param config {@link FileConfiguration} of the plugin
      */
     public void addIntoConfig(FileConfiguration config) {
+        config.set(getConfigCategorySection() + ".name", displayName);
         config.set(getConfigCategorySection() + ".description", description);
         config.set(getConfigCategorySection() + ".icon", icon.getType().name());
     }

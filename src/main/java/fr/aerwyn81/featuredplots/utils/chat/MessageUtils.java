@@ -4,8 +4,10 @@ import net.md_5.bungee.api.ChatColor;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class MessageUtils {
     private static final Pattern hexPattern = Pattern.compile("\\{#[0-9a-fA-F]{6}}");
@@ -30,6 +32,17 @@ public class MessageUtils {
             } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException ignore) {
             }
         }
+
         return ChatColor.translateAlternateColorCodes('&', replaced);
+    }
+
+    /**
+     * Colorize a list of string
+     *
+     * @param messages list of message to colorize
+     * @return list of message colorized
+     */
+    public static ArrayList<String> colorize(ArrayList<String> messages) {
+        return messages.stream().map(MessageUtils::colorize).collect(Collectors.toCollection(ArrayList::new));
     }
 }

@@ -19,9 +19,9 @@ public abstract class Item {
         return name;
     }
 
-    public ArrayList<String> getDescription() {
-        return description;
-    }
+    public abstract String getNameColorized();
+
+    public abstract ArrayList<String> getDescriptionColorized();
 
     public ItemStack getIcon() {
         return icon;

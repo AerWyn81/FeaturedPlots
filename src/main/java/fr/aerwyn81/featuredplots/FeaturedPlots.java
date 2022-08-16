@@ -2,10 +2,12 @@ package fr.aerwyn81.featuredplots;
 
 import com.plotsquared.core.PlotAPI;
 import fr.aerwyn81.featuredplots.commands.FPCommandExecutor;
+import fr.aerwyn81.featuredplots.events.OnInventoryClick;
 import fr.aerwyn81.featuredplots.events.OnWorldEvent;
 import fr.aerwyn81.featuredplots.handlers.ConfigHandler;
 import fr.aerwyn81.featuredplots.handlers.LanguageHandler;
 import fr.aerwyn81.featuredplots.managers.FeaturedPlotsManager;
+import fr.aerwyn81.featuredplots.managers.GuiManager;
 import fr.aerwyn81.featuredplots.utils.chat.MessageUtils;
 import fr.aerwyn81.featuredplots.utils.config.ConfigUpdater;
 import org.bukkit.Bukkit;
@@ -25,6 +27,7 @@ public final class FeaturedPlots extends JavaPlugin {
     private LanguageHandler languageHandler;
 
     private FeaturedPlotsManager featuredPlotsManager;
+    private GuiManager guiManager;
 
     private PlotAPI plotSquaredAPI;
 
@@ -64,9 +67,12 @@ public final class FeaturedPlots extends JavaPlugin {
         this.featuredPlotsManager = new FeaturedPlotsManager(this);
         this.featuredPlotsManager.loadStorage();
 
+        this.guiManager = new GuiManager(this);
+
         getCommand("featuredplots").setExecutor(new FPCommandExecutor(this));
 
         Bukkit.getPluginManager().registerEvents(new OnWorldEvent(this), this);
+        Bukkit.getPluginManager().registerEvents(new OnInventoryClick(this), this);
 
         log.sendMessage(MessageUtils.colorize("&3&lF&beatured&2&lP&alots &einitialized!"));
     }
@@ -90,6 +96,10 @@ public final class FeaturedPlots extends JavaPlugin {
 
     public FeaturedPlotsManager getFeaturedPlotsManager() {
         return featuredPlotsManager;
+    }
+
+    public GuiManager getGuiManager() {
+        return guiManager;
     }
 
     public PlotAPI getPlotSquaredAPI() {

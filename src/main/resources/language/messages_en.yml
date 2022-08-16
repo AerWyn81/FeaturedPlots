@@ -23,6 +23,12 @@ Chat:
   NextPage: "&7--------[&8>>>&7]--------"
   PageFooter: " &8[ &e%pageNumber%&7/&e%totalPage% &8] "
 
+Gui:
+  TitleCategories: "&3Categories"
+  TitlePlots: "&3Featured plots"
+  PreviousPage: "&cPrevious page"
+  NextPage: "&aNext page"
+
 Help:
   CommandUsage: "%prefix% &7Command usage: "
   LineTop: "&7--------------------[ &e&lHelp &7]--------------------"
