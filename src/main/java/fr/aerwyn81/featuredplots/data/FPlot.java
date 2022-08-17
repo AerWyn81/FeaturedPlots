@@ -47,12 +47,31 @@ public class FPlot extends Item {
         this(name, new ArrayList<>(), new ItemStack(Material.PLAYER_HEAD), plot, category);
     }
 
+    /**
+     * Used in PersistentDataContainer to retrieve the fPlot in GUI
+     *
+     * @return plotId of the fPlot
+     */
+    @Override
+    public String getGuiKey() {
+        return plot.getId().toDashSeparatedString();
+    }
 
+    /**
+     * Retrieve the colored name of the fPlot
+     *
+     * @return {@link String} colorized string
+     */
     @Override
     public String getNameColorized() {
         return MessageUtils.colorize(name);
     }
 
+    /**
+     * Retrieve the colored lore of the fPlot
+     *
+     * @return {@link ArrayList<String>} colorized strings
+     */
     @Override
     public ArrayList<String> getDescriptionColorized() {
         return MessageUtils.colorize(description);

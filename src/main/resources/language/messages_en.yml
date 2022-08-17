@@ -28,6 +28,7 @@ Gui:
   TitlePlots: "&3Featured plots"
   PreviousPage: "&cPrevious page"
   NextPage: "&aNext page"
+  Close: "&cClose"
 
 Help:
   CommandUsage: "%prefix% &7Command usage: "

@@ -23,7 +23,7 @@ public record ExploreCommand(FeaturedPlots main, LanguageHandler languageHandler
             return true;
         }
 
-        main.getGuiManager().openPage(new ArrayList<>(featuredPlots.keySet()), player, 0);
+        main.getGuiManager().openCategories(player, main.getFeaturedPlotsManager().getCategoryHandler().getCategories());
         return true;
     }
 

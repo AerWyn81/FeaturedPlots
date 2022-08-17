@@ -128,6 +128,23 @@ public class ItemBuilder {
     }
 
     /**
+     * Set the skull owner of the skull
+     *
+     * @param name name of the player
+     */
+    public ItemBuilder skullOwner(String name) {
+        if (!(is.getItemMeta() instanceof SkullMeta meta)) {
+            return this;
+        }
+
+        is.setDurability((byte) 3);
+        meta.setOwner(name);
+        is.setItemMeta(meta);
+
+        return this;
+    }
+
+    /**
      * Get itemstack from the ItemBuilder
      *
      * @return itemstack created by the ItemBuilder

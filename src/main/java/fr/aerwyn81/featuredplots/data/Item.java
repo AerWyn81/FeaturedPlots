@@ -19,6 +19,8 @@ public abstract class Item {
         return name;
     }
 
+    public abstract String getGuiKey();
+
     public abstract String getNameColorized();
 
     public abstract ArrayList<String> getDescriptionColorized();

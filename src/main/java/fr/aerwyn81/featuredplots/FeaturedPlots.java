@@ -2,7 +2,7 @@ package fr.aerwyn81.featuredplots;
 
 import com.plotsquared.core.PlotAPI;
 import fr.aerwyn81.featuredplots.commands.FPCommandExecutor;
-import fr.aerwyn81.featuredplots.events.OnInventoryClick;
+import fr.aerwyn81.featuredplots.events.OnFPMenuClick;
 import fr.aerwyn81.featuredplots.events.OnWorldEvent;
 import fr.aerwyn81.featuredplots.handlers.ConfigHandler;
 import fr.aerwyn81.featuredplots.handlers.LanguageHandler;
@@ -72,7 +72,7 @@ public final class FeaturedPlots extends JavaPlugin {
         getCommand("featuredplots").setExecutor(new FPCommandExecutor(this));
 
         Bukkit.getPluginManager().registerEvents(new OnWorldEvent(this), this);
-        Bukkit.getPluginManager().registerEvents(new OnInventoryClick(this), this);
+        Bukkit.getPluginManager().registerEvents(new OnFPMenuClick(this, guiManager), this);
 
         log.sendMessage(MessageUtils.colorize("&3&lF&beatured&2&lP&alots &einitialized!"));
     }

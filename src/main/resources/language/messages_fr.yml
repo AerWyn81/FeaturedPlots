@@ -28,6 +28,7 @@ Gui:
   TitlePlots: "&3Plots en vedette"
   PreviousPage: "&cPage précédente"
   NextPage: "&aPage suivante"
+  Close: "&cFermer"
 
 Help:
   CommandUsage: "%prefix% &7Utilisation de la commande : "

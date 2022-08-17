@@ -22,11 +22,31 @@ public class Category extends Item {
         this.plots = new ArrayList<>();
     }
 
+    /**
+     * Used in PersistentDataContainer to retrieve the category in GUI
+     *
+     * @return name of the category
+     */
+    @Override
+    public String getGuiKey() {
+        return name;
+    }
+
+    /**
+     * Retrieve the colored name of the category
+     *
+     * @return {@link String} colorized string
+     */
     @Override
     public String getNameColorized() {
         return MessageUtils.colorize(displayName);
     }
 
+    /**
+     * Retrieve the colored lore of the category
+     *
+     * @return {@link ArrayList<String>} colorized strings
+     */
     @Override
     public ArrayList<String> getDescriptionColorized() {
         return MessageUtils.colorize(description);
