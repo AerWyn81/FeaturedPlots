@@ -2,11 +2,13 @@ package fr.aerwyn81.featuredplots.data;
 
 import com.plotsquared.core.plot.Plot;
 import fr.aerwyn81.featuredplots.managers.FeaturedPlotsManager;
+import fr.aerwyn81.featuredplots.utils.ItemBuilder;
 import fr.aerwyn81.featuredplots.utils.chat.MessageUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.ArrayList;
 
@@ -43,8 +45,8 @@ public class FPlot extends Item {
      * @param plot     {@link Plot} PlotSquared plot
      * @param category {@link Category} of the plot
      */
-    public FPlot(String name, Plot plot, Category category) {
-        this(name, new ArrayList<>(), new ItemStack(Material.PLAYER_HEAD), plot, category);
+    public FPlot(String name, Plot plot, Category category, ItemStack icon) {
+        this(name, new ArrayList<>(), icon, plot, category);
     }
 
     /**
@@ -135,10 +137,19 @@ public class FPlot extends Item {
         var description = new ArrayList<>(section.getStringList("description"));
         var configWorld = section.getString("world");
         var configPlotArea = section.getString("plotArea");
-        var icon = section.getString("icon", Material.PLAYER_HEAD.name());
         var configCategory = section.getString("category");
 
-        return new FPlot(configPlotId, name, description, new ItemStack(Material.valueOf(icon)), configCategory, configWorld, configPlotArea);
+        var icon = new ItemStack(Material.valueOf(section.getString("icon.type", Material.PLAYER_HEAD.name())));
+
+        if (icon.getType() == Material.PLAYER_HEAD) {
+            if (section.contains("icon.player")) {
+                icon = new ItemBuilder(icon).setSkullOwner(section.getString("icon.player", "")).toItemStack();
+            } else if (section.contains("icon.textureId")) {
+                icon = new ItemBuilder(icon).setSkullTexture(section.getString("icon.textureId", "")).toItemStack();
+            }
+        }
+
+        return new FPlot(configPlotId, name, description, icon, configCategory, configWorld, configPlotArea);
     }
 
     /**
@@ -155,7 +166,12 @@ public class FPlot extends Item {
         config.set(getConfigFPlotSection() + ".description", description);
         config.set(getConfigFPlotSection() + ".world", plotWorldName);
         config.set(getConfigFPlotSection() + ".plotArea", plotArea != null ? plotArea.toString() : plotWorldName);
-        config.set(getConfigFPlotSection() + ".icon", icon.getType().name());
+        config.set(getConfigFPlotSection() + ".icon.type", icon.getType().name());
+
+        if (icon.getItemMeta() instanceof SkullMeta meta) {
+            config.set(getConfigFPlotSection() + ".icon.player", meta.getOwnerProfile().getName());
+        }
+
         config.set(getConfigFPlotSection() + ".category", category.getName());
     }
 

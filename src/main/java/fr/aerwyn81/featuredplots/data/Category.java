@@ -1,6 +1,7 @@
 package fr.aerwyn81.featuredplots.data;
 
 import fr.aerwyn81.featuredplots.managers.FeaturedPlotsManager;
+import fr.aerwyn81.featuredplots.utils.ItemBuilder;
 import fr.aerwyn81.featuredplots.utils.chat.MessageUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -112,9 +113,17 @@ public class Category extends Item {
 
         var displayName = section.getString("name", name);
         var description = new ArrayList<>(section.getStringList("description"));
-        var icon = section.getString("icon", Material.GRASS_BLOCK.name());
+        var icon = new ItemStack(Material.valueOf(section.getString("icon.type", Material.GRASS_BLOCK.name())));
 
-        return new Category(name, displayName, description, new ItemStack(Material.valueOf(icon)));
+        if (icon.getType() == Material.PLAYER_HEAD) {
+            if (section.contains("icon.player")) {
+                icon = new ItemBuilder(icon).setSkullOwner(section.getString("icon.player", "")).toItemStack();
+            } else if (section.contains("icon.textureId")) {
+                icon = new ItemBuilder(icon).setSkullTexture(section.getString("icon.textureId", "")).toItemStack();
+            }
+        }
+
+        return new Category(name, displayName, description, icon);
     }
 
     /**
@@ -126,7 +135,7 @@ public class Category extends Item {
     public void addIntoConfig(FileConfiguration config) {
         config.set(getConfigCategorySection() + ".name", displayName);
         config.set(getConfigCategorySection() + ".description", description);
-        config.set(getConfigCategorySection() + ".icon", icon.getType().name());
+        config.set(getConfigCategorySection() + ".icon.type", icon.getType().name());
     }
 
     /**

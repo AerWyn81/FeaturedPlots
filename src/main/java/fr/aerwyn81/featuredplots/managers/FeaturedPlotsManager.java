@@ -40,7 +40,7 @@ public class FeaturedPlotsManager {
         this.featuredPlots = new HashMap<>();
     }
 
-    private void loadConfiguration() {
+    public void loadConfiguration() {
         config = YamlConfiguration.loadConfiguration(configFile);
     }
 

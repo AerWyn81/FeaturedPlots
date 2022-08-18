@@ -1,11 +1,16 @@
 package fr.aerwyn81.featuredplots.handlers;
 
+import com.plotsquared.core.PlotSquared;
+import com.plotsquared.core.player.PlotPlayer;
 import com.plotsquared.core.plot.Plot;
 import fr.aerwyn81.featuredplots.FeaturedPlots;
 import fr.aerwyn81.featuredplots.data.Category;
 import fr.aerwyn81.featuredplots.data.FPlot;
 import fr.aerwyn81.featuredplots.managers.FeaturedPlotsManager;
+import fr.aerwyn81.featuredplots.managers.HeadCacheManager;
+import fr.aerwyn81.featuredplots.utils.ItemBuilder;
 import fr.aerwyn81.featuredplots.utils.chat.MessageUtils;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 
 import javax.annotation.Nullable;
@@ -90,7 +95,14 @@ public class FPlotHandler {
      * @throws Exception if there is a storage issue
      */
     public FPlot create(String name, @Nullable Plot plot, Category category) throws Exception {
-        var fPlot = new FPlot(name, plot, category);
+        var icon = new ItemBuilder(Material.PLAYER_HEAD);
+        PlotPlayer<?> player = PlotSquared.platform().playerManager().getPlayerIfExists(plot.getOwnerAbs());
+
+        if (player != null) {
+            icon.setSkullOwner(player.getName());
+        }
+
+        var fPlot = new FPlot(name, plot, category, HeadCacheManager.getHead(icon.toItemStack()));
         category.getPlots().add(fPlot);
         fPlot.addIntoConfig(manager.getConfig());
         manager.saveConfig();

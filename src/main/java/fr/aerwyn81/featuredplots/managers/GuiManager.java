@@ -13,6 +13,7 @@ import fr.aerwyn81.featuredplots.utils.ItemBuilder;
 import fr.aerwyn81.featuredplots.utils.gui.FPMenu;
 import fr.aerwyn81.featuredplots.utils.gui.ItemGUI;
 import fr.aerwyn81.featuredplots.utils.gui.pagination.FPPaginationButtonType;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -47,10 +48,14 @@ public class GuiManager {
         for (int i = 0; i < items.size(); i++) {
             var item = items.get(i);
 
-            var itemGUI = new ItemGUI(new ItemBuilder(item.getIcon())
+            var icon = new ItemBuilder(item.getIcon())
                     .setName(item.getNameColorized())
                     .setLore(item.getDescriptionColorized())
-                    .toItemStack(), item instanceof FPlot || item instanceof Category category && category.getPlots().size() > 0);
+                    .toItemStack();
+
+            var itemGUI = new ItemGUI(icon.getType() == Material.PLAYER_HEAD ?
+                    HeadCacheManager.getHead(icon) :
+                    icon, item instanceof FPlot || item instanceof Category category && category.getPlots().size() > 0);
 
             if (item instanceof Category category) {
                 itemGUI.setIconBlocked(configHandler.getCategoryEmptyIcon()

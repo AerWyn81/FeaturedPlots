@@ -9,6 +9,7 @@ import fr.aerwyn81.featuredplots.handlers.ConfigHandler;
 import fr.aerwyn81.featuredplots.handlers.LanguageHandler;
 import fr.aerwyn81.featuredplots.managers.FeaturedPlotsManager;
 import fr.aerwyn81.featuredplots.managers.GuiManager;
+import fr.aerwyn81.featuredplots.managers.HeadCacheManager;
 import fr.aerwyn81.featuredplots.utils.chat.MessageUtils;
 import fr.aerwyn81.featuredplots.utils.config.ConfigUpdater;
 import org.bukkit.Bukkit;
@@ -70,6 +71,8 @@ public final class FeaturedPlots extends JavaPlugin {
 
         this.guiManager = new GuiManager(this);
 
+        HeadCacheManager.initialise();
+
         getCommand("featuredplots").setExecutor(new FPCommandExecutor(this));
 
         new PSExploreCommand(this);
@@ -82,6 +85,8 @@ public final class FeaturedPlots extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        HeadCacheManager.clear();
+
         log.sendMessage(MessageUtils.colorize("&3&lF&beatured&2&lP&alots &cdisabled!"));
     }
 
