@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 @FPAnnotations(command = "reload", permission = "featuredplots.admin")
-public record Reload(FeaturedPlots main, LanguageHandler languageHandler) implements Cmd {
+public record ReloadCommand(FeaturedPlots main, LanguageHandler languageHandler) implements Cmd {
 
     @Override
     public boolean perform(CommandSender sender, String[] args) {
@@ -30,6 +30,8 @@ public record Reload(FeaturedPlots main, LanguageHandler languageHandler) implem
                 player.closeInventory();
             }
         }
+
+        main.getFeaturedPlotsManager().loadStorage();
 
         sender.sendMessage(languageHandler.getMessage("Messages.Reload"));
         return true;

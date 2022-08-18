@@ -3,8 +3,8 @@ package fr.aerwyn81.featuredplots.commands;
 import fr.aerwyn81.featuredplots.FeaturedPlots;
 import fr.aerwyn81.featuredplots.commands.list.CategoryCommands;
 import fr.aerwyn81.featuredplots.commands.list.FPlotsCommands;
-import fr.aerwyn81.featuredplots.commands.list.Help;
-import fr.aerwyn81.featuredplots.commands.list.Reload;
+import fr.aerwyn81.featuredplots.commands.list.HelpCommand;
+import fr.aerwyn81.featuredplots.commands.list.ReloadCommand;
 import fr.aerwyn81.featuredplots.commands.list.explore.ExploreCommand;
 import fr.aerwyn81.featuredplots.handlers.LanguageHandler;
 import fr.aerwyn81.featuredplots.utils.PlayerUtils;
@@ -24,7 +24,7 @@ public class FPCommandExecutor implements CommandExecutor, TabCompleter {
     private final HashMap<String, FPCommand> registeredCommands;
 
     private final LanguageHandler languageHandler;
-    private final Help helpCommand;
+    private final HelpCommand helpCommand;
 
     /**
      * Default constructor used to list commands
@@ -35,13 +35,13 @@ public class FPCommandExecutor implements CommandExecutor, TabCompleter {
         this.languageHandler = main.getLanguageHandler();
         this.registeredCommands = new HashMap<>();
 
-        this.helpCommand = new Help(main);
+        this.helpCommand = new HelpCommand(main);
 
         this.register(helpCommand);
         this.register(new CategoryCommands(main, languageHandler));
         this.register(new FPlotsCommands(main, languageHandler));
         this.register(new ExploreCommand(main, languageHandler));
-        this.register(new Reload(main, languageHandler));
+        this.register(new ReloadCommand(main, languageHandler));
     }
 
     /**

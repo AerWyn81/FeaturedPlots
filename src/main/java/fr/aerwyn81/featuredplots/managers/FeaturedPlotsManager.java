@@ -56,10 +56,6 @@ public class FeaturedPlotsManager {
         return featuredPlots;
     }
 
-    public ArrayList<FPlot> getFeaturedPlotsByCategory(Category category) {
-        return featuredPlots.get(category);
-    }
-
     public CategoryHandler getCategoryHandler() {
         return categoryHandler;
     }
@@ -74,6 +70,8 @@ public class FeaturedPlotsManager {
     public void loadStorage() {
         this.categoryHandler.loadCategories();
         this.fPlotHandler.loadPlots();
+
+        this.featuredPlots.clear();
 
         for (FPlot p : getPlotHandler().getPlots()) {
             var category = getCategoryHandler().getCategoryByName(p.getConfigCategory());

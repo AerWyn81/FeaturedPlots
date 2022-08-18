@@ -2,6 +2,7 @@ package fr.aerwyn81.featuredplots;
 
 import com.plotsquared.core.PlotAPI;
 import fr.aerwyn81.featuredplots.commands.FPCommandExecutor;
+import fr.aerwyn81.featuredplots.commands.list.explore.PSExploreCommand;
 import fr.aerwyn81.featuredplots.events.OnFPMenuClick;
 import fr.aerwyn81.featuredplots.events.OnWorldEvent;
 import fr.aerwyn81.featuredplots.handlers.ConfigHandler;
@@ -70,6 +71,8 @@ public final class FeaturedPlots extends JavaPlugin {
         this.guiManager = new GuiManager(this);
 
         getCommand("featuredplots").setExecutor(new FPCommandExecutor(this));
+
+        new PSExploreCommand(this);
 
         Bukkit.getPluginManager().registerEvents(new OnWorldEvent(this), this);
         Bukkit.getPluginManager().registerEvents(new OnFPMenuClick(this, guiManager), this);

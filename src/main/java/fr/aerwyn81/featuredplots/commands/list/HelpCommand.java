@@ -15,11 +15,11 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 
 @FPAnnotations(command = "help")
-public class Help implements Cmd {
+public class HelpCommand implements Cmd {
     private final LanguageHandler languageHandler;
     private final ArrayList<FPCommand> registeredCommands;
 
-    public Help(FeaturedPlots main) {
+    public HelpCommand(FeaturedPlots main) {
         this.languageHandler = main.getLanguageHandler();
         this.registeredCommands = new ArrayList<>();
     }
