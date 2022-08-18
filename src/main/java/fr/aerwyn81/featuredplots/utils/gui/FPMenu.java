@@ -26,6 +26,7 @@ public class FPMenu implements InventoryHolder {
     private int rowsPerPage;
     private String name;
     private int currentPage;
+    private boolean isNestedMenu;
 
     private final Map<Integer, ItemGUI> items;
 
@@ -33,12 +34,13 @@ public class FPMenu implements InventoryHolder {
 
     private FPPaginationButtonBuilder paginationButtonBuilder;
 
-    public FPMenu(JavaPlugin owner, GuiManager guiManager, String name, int rowsPerPage) {
+    public FPMenu(JavaPlugin owner, GuiManager guiManager, String name, boolean isNestedMenu, int rowsPerPage) {
         this.owner = owner;
         this.guiManager = guiManager;
 
         setName(name);
         this.rowsPerPage = rowsPerPage;
+        this.isNestedMenu = isNestedMenu;
         this.items = new HashMap<>();
 
         this.currentPage = 0;
@@ -74,6 +76,14 @@ public class FPMenu implements InventoryHolder {
 
     public void setRowsPerPage(int rowsPerPage) {
         this.rowsPerPage = rowsPerPage;
+    }
+
+    public boolean isNestedMenu() {
+        return isNestedMenu;
+    }
+
+    public void setNestedMenu(boolean nestedMenu) {
+        isNestedMenu = nestedMenu;
     }
 
     public void setPaginationButtonBuilder(FPPaginationButtonBuilder paginationButtonBuilder) {

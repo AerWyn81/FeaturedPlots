@@ -29,6 +29,20 @@ Gui:
   PreviousPage: "&cPrevious page"
   NextPage: "&aNext page"
   Close: "&cClose"
+  CloseLore:
+    - "&7Close this interface"
+  Back: "&cBack"
+  BackLore:
+    - "&7Back to list of categories"
+  Previous: "&cPrevious page"
+  PreviousLore:
+    - "&7Back to page %page%"
+  Next: "&aNext page"
+  NextLore:
+    - "&7Next to page %page%"
+  Info: "&eViewing page &a%page% &eof &a%max%"
+  InfoLore:
+    - "&7You are currently viewing page %page%"
 
 Help:
   CommandUsage: "%prefix% &7Command usage: "

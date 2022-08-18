@@ -3,6 +3,7 @@ package fr.aerwyn81.featuredplots.commands.list.explore;
 import fr.aerwyn81.featuredplots.FeaturedPlots;
 import fr.aerwyn81.featuredplots.commands.Cmd;
 import fr.aerwyn81.featuredplots.commands.FPAnnotations;
+import fr.aerwyn81.featuredplots.data.GuiType;
 import fr.aerwyn81.featuredplots.handlers.LanguageHandler;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -23,7 +24,7 @@ public record ExploreCommand(FeaturedPlots main, LanguageHandler languageHandler
             return true;
         }
 
-        main.getGuiManager().openCategories(player, main.getFeaturedPlotsManager().getCategoryHandler().getCategories());
+        main.getGuiManager().open(player, GuiType.Categories, new ArrayList<>(main.getFeaturedPlotsManager().getCategoryHandler().getCategories()));
         return true;
     }
 

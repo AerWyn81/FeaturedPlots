@@ -1,14 +1,19 @@
 package fr.aerwyn81.featuredplots.utils;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.profile.PlayerProfile;
+import org.bukkit.profile.PlayerTextures;
 
+import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class ItemBuilder {
     private final ItemStack is;
@@ -70,14 +75,50 @@ public class ItemBuilder {
      * @param owner name of the skull's owner
      */
     public ItemBuilder setSkullOwner(String owner) {
+        if (!(is.getItemMeta() instanceof SkullMeta meta)) {
+            return this;
+        }
+
         try {
-            SkullMeta im = (SkullMeta) is.getItemMeta();
-            im.setOwner(owner);
-            is.setItemMeta(im);
+            meta.setOwner(owner);
+            is.setItemMeta(meta);
         } catch (ClassCastException ignored) {
         }
 
         return this;
+    }
+
+    /**
+     * Set the head texture to a head
+     *
+     * @param url complete MoJang texture url
+     */
+    public ItemBuilder setSkullTexture(String url) {
+        if (!(is.getItemMeta() instanceof SkullMeta meta)) {
+            return this;
+        }
+
+        if (url.isEmpty()) {
+            return this;
+        }
+
+        try {
+            PlayerProfile profile = Bukkit.createPlayerProfile(UUID.randomUUID());
+            PlayerTextures textures = profile.getTextures();
+
+            var textureURL = "https://textures.minecraft.net/texture/";
+
+            if (!url.startsWith(textureURL))
+                url = textureURL + url;
+
+            textures.setSkin(new URL(url));
+
+            meta.setOwnerProfile(profile);
+            is.setItemMeta(meta);
+            return new ItemBuilder(is);
+        } catch (Exception ex) {
+            return this;
+        }
     }
 
     /**
@@ -124,23 +165,6 @@ public class ItemBuilder {
         ItemMeta im = is.getItemMeta();
         im.setLore(lore);
         is.setItemMeta(im);
-        return this;
-    }
-
-    /**
-     * Set the skull owner of the skull
-     *
-     * @param name name of the player
-     */
-    public ItemBuilder skullOwner(String name) {
-        if (!(is.getItemMeta() instanceof SkullMeta meta)) {
-            return this;
-        }
-
-        is.setDurability((byte) 3);
-        meta.setOwner(name);
-        is.setItemMeta(meta);
-
         return this;
     }
 

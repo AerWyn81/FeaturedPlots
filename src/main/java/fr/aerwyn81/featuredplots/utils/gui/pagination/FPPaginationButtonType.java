@@ -6,10 +6,12 @@ package fr.aerwyn81.featuredplots.utils.gui.pagination;
  */
 public enum FPPaginationButtonType {
 
+    BACK_BUTTON(0),
     PREV_BUTTON(3),
     CURRENT_BUTTON(4),
     NEXT_BUTTON(5),
-    UNASSIGNED(0);
+    CLOSE_BUTTON(8),
+    UNASSIGNED(1);
 
     private final int slot;
 
@@ -28,5 +30,4 @@ public enum FPPaginationButtonType {
 
         return FPPaginationButtonType.UNASSIGNED;
     }
-
 }

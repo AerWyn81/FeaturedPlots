@@ -19,29 +19,32 @@ public record OnFPMenuClick(JavaPlugin owner, GuiManager guiManager) implements 
      */
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
-        if (event.getInventory().getHolder() != null && event.getInventory().getHolder() instanceof FPMenu clickedGui) {
+        if (event.getInventory().getHolder() == null || !(event.getInventory().getHolder() instanceof FPMenu clickedGui)) {
+            return;
+        }
 
-            if (!clickedGui.getOwner().equals(owner)) return;
+        if (!clickedGui.getOwner().equals(owner)) {
+            return;
+        }
 
-            event.setCancelled(true);
+        event.setCancelled(true);
 
-            if (event.getSlot() > clickedGui.getPageSize()) {
-                int offset = event.getSlot() - clickedGui.getPageSize();
-                FPPaginationButtonType buttonType = FPPaginationButtonType.forSlot(offset);
+        if (event.getRawSlot() >= clickedGui.getPageSize()) {
+            int offset = event.getRawSlot() - clickedGui.getPageSize();
+            FPPaginationButtonType buttonType = FPPaginationButtonType.forSlot(offset);
 
-                ItemGUI paginationButton = guiManager.getDefaultPaginationButtonBuilder(buttonType, clickedGui);
+            ItemGUI paginationButton = guiManager.getDefaultPaginationButtonBuilder(buttonType, clickedGui);
 
-                if (paginationButton != null) {
-                    paginationButton.getOnClickEvent().accept(event);
-                }
-
-                return;
+            if (paginationButton != null && paginationButton.getOnClickEvent() != null) {
+                paginationButton.getOnClickEvent().accept(event);
             }
 
-            ItemGUI button = clickedGui.getItem(clickedGui.getCurrentPage(), event.getSlot());
-            if (button != null && button.getOnClickEvent() != null) {
-                button.getOnClickEvent().accept(event);
-            }
+            return;
+        }
+
+        ItemGUI button = clickedGui.getItem(clickedGui.getCurrentPage(), event.getRawSlot());
+        if (button != null && button.getOnClickEvent() != null) {
+            button.getOnClickEvent().accept(event);
         }
     }
 

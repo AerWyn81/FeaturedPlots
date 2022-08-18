@@ -29,6 +29,20 @@ Gui:
   PreviousPage: "&cPage précédente"
   NextPage: "&aPage suivante"
   Close: "&cFermer"
+  CloseLore:
+    - "&7Fermer cette interface"
+  Back: "&cRetour"
+  BackLore:
+    - "&7Revenir à la liste des catégories"
+  Previous: "&cPage précédente"
+  PreviousLore:
+    - "&7Revenir à la page %page%"
+  Next: "&aPage suivante"
+  NextLore:
+    - "&7Accéder à la page %page%"
+  Info: "&eAffichage de la page &a%page% &esur &a%max%"
+  InfoLore:
+    - "&7Vous avez actuellement la page %page% affichée"
 
 Help:
   CommandUsage: "%prefix% &7Utilisation de la commande : "

@@ -4,55 +4,53 @@ import com.plotsquared.bukkit.util.BukkitUtil;
 import com.plotsquared.core.events.TeleportCause;
 import fr.aerwyn81.featuredplots.FeaturedPlots;
 import fr.aerwyn81.featuredplots.data.Category;
+import fr.aerwyn81.featuredplots.data.FPlot;
+import fr.aerwyn81.featuredplots.data.GuiType;
+import fr.aerwyn81.featuredplots.data.Item;
+import fr.aerwyn81.featuredplots.handlers.ConfigHandler;
 import fr.aerwyn81.featuredplots.handlers.LanguageHandler;
 import fr.aerwyn81.featuredplots.utils.ItemBuilder;
 import fr.aerwyn81.featuredplots.utils.gui.FPMenu;
 import fr.aerwyn81.featuredplots.utils.gui.ItemGUI;
 import fr.aerwyn81.featuredplots.utils.gui.pagination.FPPaginationButtonType;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class GuiManager {
     private final FeaturedPlots main;
+    private final ConfigHandler configHandler;
     private final LanguageHandler languageHandler;
-
-    private FPMenu fpMenu;
 
     public GuiManager(FeaturedPlots main) {
         this.main = main;
+        this.configHandler = main.getConfigHandler();
         this.languageHandler = main.getLanguageHandler();
     }
 
-    public void openCategories(Player p, ArrayList<Category> categories) {
-        fpMenu = new FPMenu(main, this, languageHandler.getMessage("Gui.TitleCategories"), 5);
-
-        for (int i = 0; i < categories.size(); i++) {
-            var category = categories.get(i);
-
-            fpMenu.addItem(i, new ItemGUI(new ItemBuilder(Material.PLAYER_HEAD)
-                    .skullOwner(p.getName())
-                    .setName(category.getNameColorized())
-                    .setLore(category.getDescriptionColorized())
-                    .toItemStack()).addOnClickEvent((event) -> openCategory((Player) event.getWhoClicked(), category)));
+    public void open(Player p, GuiType type, ArrayList<Item> items) {
+        FPMenu fpMenu;
+        if (type == GuiType.Categories) {
+            fpMenu = new FPMenu(main, this, languageHandler.getMessage("Gui.TitleCategories"), false, 5);
+        } else {
+            fpMenu = new FPMenu(main, this, languageHandler.getMessage("Gui.TitlePlots"), true, 5);
         }
 
-        p.openInventory(fpMenu.getInventory());
-    }
+        for (int i = 0; i < items.size(); i++) {
+            var item = items.get(i);
 
-    public void openCategory(Player p, Category category) {
-        fpMenu = new FPMenu(main, this, languageHandler.getMessage("Gui.TitlePlots"), 5);
-
-        for (int i = 0; i < category.getPlots().size(); i++) {
-            var plot = category.getPlots().get(i);
-
-            fpMenu.addItem(i, new ItemGUI(new ItemBuilder(Material.PLAYER_HEAD)
-                    .skullOwner(p.getName())
-                    .setName(category.getNameColorized())
-                    .setLore(category.getDescriptionColorized())
-                    .toItemStack()).addOnClickEvent((event) -> plot.getPlot().teleportPlayer(BukkitUtil.adapt((Player) event.getWhoClicked()), TeleportCause.COMMAND_VISIT, (result) -> {
-            })));
+            fpMenu.addItem(i, new ItemGUI(new ItemBuilder(item.getIcon())
+                    .setName(item.getNameColorized())
+                    .setLore(item.getDescriptionColorized())
+                    .toItemStack()).addOnClickEvent((event) -> {
+                if (item instanceof Category category) {
+                    open((Player) event.getWhoClicked(), GuiType.Plots, new ArrayList<>(category.getPlots()));
+                } else if (item instanceof FPlot plot) {
+                    plot.getPlot().teleportPlayer(BukkitUtil.adapt((Player) event.getWhoClicked()), TeleportCause.COMMAND_VISIT, (result) -> {
+                    });
+                }
+            }));
         }
 
         p.openInventory(fpMenu.getInventory());
@@ -60,46 +58,66 @@ public class GuiManager {
 
     public ItemGUI getDefaultPaginationButtonBuilder(FPPaginationButtonType type, FPMenu inventory) {
         switch (type) {
+            case BACK_BUTTON -> {
+                if (inventory.isNestedMenu()) {
+                    return new ItemGUI(configHandler.getBackIcon()
+                            .setName(languageHandler.getMessage("Gui.Back"))
+                            .setLore(languageHandler.getMessages("Gui.BackLore"))
+                            .toItemStack()
+                    ).addOnClickEvent(event -> open((Player) event.getWhoClicked(), GuiType.Categories,
+                            new ArrayList<>(main.getFeaturedPlotsManager().getCategoryHandler().getCategories())));
+                } else {
+                    return new ItemGUI(configHandler.getBorderIcon().setName("§7").toItemStack());
+                }
+            }
             case PREV_BUTTON -> {
                 if (inventory.getCurrentPage() > 0) {
-                    return new ItemGUI(new ItemBuilder(Material.ARROW)
-                            .setName("&a&l\u2190 Previous Page")
-                            .setLore(
-                                    "&aClick to move back to",
-                                    "&apage " + inventory.getCurrentPage() + ".")
+                    return new ItemGUI(configHandler.getPreviousIcon()
+                            .setName(languageHandler.getMessage("Gui.Previous"))
+                            .setLore(languageHandler.getMessages("Gui.PreviousLore")
+                                    .stream().map(s -> s.replaceAll("%page%", String.valueOf(inventory.getCurrentPage()))).collect(Collectors.toList()))
                             .toItemStack()
                     ).addOnClickEvent(event -> inventory.previousPage(event.getWhoClicked()));
                 } else {
-                    return null;
+                    return new ItemGUI(configHandler.getBorderIcon().setName("§7").toItemStack());
                 }
             }
             case CURRENT_BUTTON -> {
-                return new ItemGUI(new ItemBuilder(Material.NAME_TAG)
-                        .setName("&7&lPage " + (inventory.getCurrentPage() + 1) + " of " + inventory.getMaxPage())
-                        .setLore(
-                                "&7You are currently viewing",
-                                "&7page " + (inventory.getCurrentPage() + 1) + "."
-                        ).toItemStack()
-                ).addOnClickEvent(event -> event.setCancelled(true));
+                if (configHandler.isDisplayInfoIcon()) {
+                    return new ItemGUI(configHandler.getInfoIcon()
+                            .setName(languageHandler.getMessage("Gui.Info")
+                                    .replaceAll("%page%", String.valueOf((inventory.getCurrentPage() + 1)))
+                                    .replaceAll("%max%", String.valueOf(inventory.getMaxPage())))
+                            .setLore(languageHandler.getMessages("Gui.InfoLore")
+                                    .stream().map(s -> s.replaceAll("%page%", String.valueOf((inventory.getCurrentPage() + 1)))).collect(Collectors.toList()))
+                            .toItemStack()
+                    );
+                } else {
+                    return new ItemGUI(configHandler.getBorderIcon().setName("§7").toItemStack());
+                }
             }
             case NEXT_BUTTON -> {
                 if (inventory.getCurrentPage() < inventory.getMaxPage() - 1) {
-                    return new ItemGUI(new ItemBuilder(Material.ARROW)
-                            .setName("&a&lNext Page \u2192")
-                            .setLore(
-                                    "&aClick to move forward to",
-                                    "&apage " + (inventory.getCurrentPage() + 2) + "."
-                            ).toItemStack()
+                    return new ItemGUI(configHandler.getNextIcon()
+                            .setName(languageHandler.getMessage("Gui.Next"))
+                            .setLore(languageHandler.getMessages("Gui.NextLore")
+                                    .stream().map(s -> s.replaceAll("%page%", String.valueOf((inventory.getCurrentPage() + 2)))).collect(Collectors.toList()))
+                            .toItemStack()
                     ).addOnClickEvent(event -> inventory.nextPage(event.getWhoClicked()));
                 } else {
-                    return null;
+                    return new ItemGUI(configHandler.getBorderIcon().setName("§7").toItemStack());
                 }
             }
+            case CLOSE_BUTTON -> {
+                return new ItemGUI(configHandler.getCloseIcon()
+                        .setName(languageHandler.getMessage("Gui.Close"))
+                        .setLore(languageHandler.getMessages("Gui.CloseLore"))
+                        .toItemStack()
+                ).addOnClickEvent(event -> event.getWhoClicked().closeInventory());
+            }
             default -> {
-                return null;
+                return new ItemGUI(configHandler.getBorderIcon().setName("§7").toItemStack());
             }
         }
     }
-
-    ;
 }
