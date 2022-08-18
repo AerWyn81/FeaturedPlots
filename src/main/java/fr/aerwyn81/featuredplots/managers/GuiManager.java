@@ -29,6 +29,13 @@ public class GuiManager {
         this.languageHandler = main.getLanguageHandler();
     }
 
+    /**
+     * Open the inventory for the player
+     *
+     * @param p     {@link Player} target player
+     * @param type  {@link GuiType} inventory type
+     * @param items inventory categories or plots
+     */
     public void open(Player p, GuiType type, ArrayList<Item> items) {
         FPMenu fpMenu;
         if (type == GuiType.Categories) {
@@ -40,22 +47,34 @@ public class GuiManager {
         for (int i = 0; i < items.size(); i++) {
             var item = items.get(i);
 
-            fpMenu.addItem(i, new ItemGUI(new ItemBuilder(item.getIcon())
+            var itemGUI = new ItemGUI(new ItemBuilder(item.getIcon())
                     .setName(item.getNameColorized())
                     .setLore(item.getDescriptionColorized())
-                    .toItemStack()).addOnClickEvent((event) -> {
-                if (item instanceof Category category) {
-                    open((Player) event.getWhoClicked(), GuiType.Plots, new ArrayList<>(category.getPlots()));
-                } else if (item instanceof FPlot plot) {
-                    plot.getPlot().teleportPlayer(BukkitUtil.adapt((Player) event.getWhoClicked()), TeleportCause.COMMAND_VISIT, (result) -> {
-                    });
-                }
-            }));
+                    .toItemStack(), item instanceof FPlot || item instanceof Category category && category.getPlots().size() > 0);
+
+            if (item instanceof Category category) {
+                itemGUI.setIconBlocked(configHandler.getCategoryEmptyIcon()
+                        .setName(item.getNameColorized() + languageHandler.getMessage("Gui.EmptyCategory"))
+                        .setLore(item.getDescriptionColorized())
+                        .toItemStack());
+                itemGUI.addOnClickEvent(event -> open((Player) event.getWhoClicked(), GuiType.Plots, new ArrayList<>(category.getPlots())));
+            } else if (item instanceof FPlot fPlot) {
+                itemGUI.addOnClickEvent(event -> fPlot.getPlot().teleportPlayer(BukkitUtil.adapt((Player) event.getWhoClicked()), TeleportCause.COMMAND_VISIT, (result) -> {
+                }));
+            }
+
+            fpMenu.addItem(i, itemGUI);
         }
 
         p.openInventory(fpMenu.getInventory());
     }
 
+    /**
+     * Build the pagination layout for each type of paginate button
+     *
+     * @param type      {@link FPPaginationButtonType} pagination button type
+     * @param inventory {@link FPMenu} inventory to fill
+     */
     public ItemGUI getDefaultPaginationButtonBuilder(FPPaginationButtonType type, FPMenu inventory) {
         switch (type) {
             case BACK_BUTTON -> {

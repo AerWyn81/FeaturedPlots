@@ -83,6 +83,7 @@ public class CategoryHandler {
      */
     public Category create(String name) throws Exception {
         var category = new Category(name);
+        category.setDisplayName("&7" + name);
 
         category.addIntoConfig(manager.getConfig());
         manager.saveConfig();

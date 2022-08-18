@@ -5,6 +5,9 @@ language: en
 # - a simple item
 # - a playerHead with a texture
 gui:
+  category:
+    emptyIcon:
+      type: COARSE_DIRT
   borderIcon:
     type: GRAY_STAINED_GLASS_PANE
   previousIcon:

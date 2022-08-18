@@ -43,7 +43,7 @@ public record OnFPMenuClick(JavaPlugin owner, GuiManager guiManager) implements 
         }
 
         ItemGUI button = clickedGui.getItem(clickedGui.getCurrentPage(), event.getRawSlot());
-        if (button != null && button.getOnClickEvent() != null) {
+        if (button != null && button.getOnClickEvent() != null && button.isClickable()) {
             button.getOnClickEvent().accept(event);
         }
     }

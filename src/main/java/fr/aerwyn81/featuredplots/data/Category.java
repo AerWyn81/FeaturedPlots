@@ -13,7 +13,7 @@ public class Category extends Item {
     private String displayName;
     private final ArrayList<FPlot> plots;
 
-    private static final ItemStack DEFAULT_ITEM_STACK = new ItemStack(Material.PODZOL);
+    private static final ItemStack DEFAULT_ITEM_STACK = new ItemStack(Material.GRASS_BLOCK);
 
     private Category(String name, ArrayList<String> description, ItemStack icon) {
         super(name, description, icon);
@@ -71,6 +71,10 @@ public class Category extends Item {
         return displayName;
     }
 
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
     /**
      * Used when category is not found
      *
@@ -108,7 +112,7 @@ public class Category extends Item {
 
         var displayName = section.getString("name", name);
         var description = new ArrayList<>(section.getStringList("description"));
-        var icon = section.getString("icon", Material.PODZOL.name());
+        var icon = section.getString("icon", Material.GRASS_BLOCK.name());
 
         return new Category(name, displayName, description, new ItemStack(Material.valueOf(icon)));
     }

@@ -149,24 +149,18 @@ public class FPMenu implements InventoryHolder {
         return slot;
     }
 
-    public boolean nextPage(HumanEntity viewer) {
+    public void nextPage(HumanEntity viewer) {
         if (currentPage < getMaxPage() - 1) {
             currentPage++;
             refreshInventory(viewer);
-            return true;
         }
-
-        return false;
     }
 
-    public boolean previousPage(HumanEntity viewer) {
+    public void previousPage(HumanEntity viewer) {
         if (currentPage > 0) {
             currentPage--;
             refreshInventory(viewer);
-            return true;
         }
-
-        return false;
     }
 
     public Consumer<FPMenu> getOnClose() {
@@ -203,7 +197,10 @@ public class FPMenu implements InventoryHolder {
             if (key > getHighestFilledSlot()) break;
 
             if (items.containsKey(key)) {
-                inventory.setItem(key - (currentPage * getPageSize()), items.get(key).getIcon());
+                var item = items.get(key);
+                var icon = item.isClickable() ? item.getIcon() : item.getIconBlocked();
+
+                inventory.setItem(key - (currentPage * getPageSize()), icon);
             }
         }
 

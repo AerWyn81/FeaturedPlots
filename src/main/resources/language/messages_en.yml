@@ -26,6 +26,7 @@ Chat:
 
 Gui:
   TitleCategories: "&3Categories"
+  EmptyCategory: " &c(Empty)"
   TitlePlots: "&3Featured plots"
   PreviousPage: "&cPrevious page"
   NextPage: "&aNext page"

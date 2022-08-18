@@ -54,7 +54,7 @@ public class FPlot extends Item {
      */
     @Override
     public String getGuiKey() {
-        return plot.getId().toDashSeparatedString();
+        return plot.getId().toString();
     }
 
     /**

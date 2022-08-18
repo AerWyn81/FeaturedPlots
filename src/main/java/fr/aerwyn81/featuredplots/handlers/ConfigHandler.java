@@ -151,4 +151,24 @@ public class ConfigHandler {
             return defaultIcon;
         }
     }
+
+    public ItemBuilder getCategoryEmptyIcon() {
+        var defaultIcon = new ItemBuilder(Material.COARSE_DIRT);
+        var path = "gui.category.emptyIcon";
+
+        if (!config.contains(path)) {
+            return defaultIcon;
+        }
+
+        try {
+            var type = Material.valueOf(config.getString(path + ".type", defaultIcon.toItemStack().getType().name()));
+            if (type != Material.PLAYER_HEAD) {
+                return new ItemBuilder(type);
+            }
+
+            return defaultIcon.setSkullTexture(config.getString(path + ".textureId", ""));
+        } catch (Exception e) {
+            return defaultIcon;
+        }
+    }
 }

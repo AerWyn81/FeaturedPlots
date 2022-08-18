@@ -13,7 +13,15 @@ public class ItemGUI {
     private Consumer<InventoryClickEvent> onClickEvent;
     private ItemStack icon;
 
+    private final boolean isClickable;
+    private ItemStack iconBlocked;
+
     public ItemGUI(ItemStack icon) {
+        this(icon, true);
+    }
+
+    public ItemGUI(ItemStack icon, boolean isClickable) {
+        this.isClickable = isClickable;
         this.icon = icon;
     }
 
@@ -36,5 +44,17 @@ public class ItemGUI {
 
     public void setIcon(ItemStack icon) {
         this.icon = icon;
+    }
+
+    public boolean isClickable() {
+        return isClickable;
+    }
+
+    public ItemStack getIconBlocked() {
+        return iconBlocked;
+    }
+
+    public void setIconBlocked(ItemStack iconBlocked) {
+        this.iconBlocked = iconBlocked;
     }
 }

@@ -26,6 +26,7 @@ Chat:
 
 Gui:
   TitleCategories: "&3Catégories"
+  EmptyCategory: " &c(Vide)"
   TitlePlots: "&3Plots en vedette"
   PreviousPage: "&cPage précédente"
   NextPage: "&aPage suivante"

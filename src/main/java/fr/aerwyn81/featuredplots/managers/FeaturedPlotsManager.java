@@ -158,13 +158,13 @@ public class FeaturedPlotsManager {
             throw new Exception("Plot has no owner");
         }
 
-        var plotFound = getPlotHandler().getPlotsById(plot.getId().toDashSeparatedString());
+        var plotFound = getPlotHandler().getPlotsById(plot.getId().toString());
         if (plotFound != null) {
             throw new Exception("This plot already exist in category " + plotFound.getCategory().getName());
         }
 
         var name = main.getLanguageHandler().getMessageWithoutColoring("Config.PlotDefaultName")
-                .replaceAll("%plotId%", plot.getId().toDashSeparatedString())
+                .replaceAll("%plotId%", plot.getId().toString())
                 .replaceAll("%player%", plotPlayer == null ? "UnknownPlayer" : plotPlayer.getName());
 
         var fPlot = fPlotHandler.create(name, plot, category);

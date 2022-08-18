@@ -44,7 +44,7 @@ public class FPlotHandler {
      */
     @Nullable
     public FPlot getPlotsById(String plotId) {
-        return getPlots().stream().filter(p -> p.getPlot().getId().toDashSeparatedString().equals(plotId)).findFirst().orElse(null);
+        return getPlots().stream().filter(p -> p.getPlot().getId().toString().equals(plotId)).findFirst().orElse(null);
     }
 
     /**
