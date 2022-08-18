@@ -2,6 +2,7 @@ package fr.aerwyn81.featuredplots.data;
 
 import com.plotsquared.core.plot.Plot;
 import fr.aerwyn81.featuredplots.managers.FeaturedPlotsManager;
+import fr.aerwyn81.featuredplots.managers.HeadCacheManager;
 import fr.aerwyn81.featuredplots.utils.ItemBuilder;
 import fr.aerwyn81.featuredplots.utils.chat.MessageUtils;
 import org.bukkit.Material;
@@ -9,6 +10,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
 
@@ -139,17 +141,19 @@ public class FPlot extends Item {
         var configPlotArea = section.getString("plotArea");
         var configCategory = section.getString("category");
 
-        var icon = new ItemStack(Material.valueOf(section.getString("icon.type", Material.PLAYER_HEAD.name())));
+        var icon = new ItemBuilder(Material.valueOf(section.getString("icon.type", Material.PLAYER_HEAD.name())));
 
-        if (icon.getType() == Material.PLAYER_HEAD) {
+        if (icon.toItemStack().getType() == Material.PLAYER_HEAD) {
             if (section.contains("icon.player")) {
-                icon = new ItemBuilder(icon).setSkullOwner(section.getString("icon.player", "")).toItemStack();
+                var playerName = section.getString("icon.player", "");
+                icon = icon.setSkullOwner(playerName).setPersistentDataContainer(HeadCacheManager.KEY_HEAD, playerName);
             } else if (section.contains("icon.textureId")) {
-                icon = new ItemBuilder(icon).setSkullTexture(section.getString("icon.textureId", "")).toItemStack();
+                var textureId = section.getString("icon.textureId", "");
+                icon = icon.setSkullTexture(textureId).setPersistentDataContainer(HeadCacheManager.KEY_HEAD, textureId);
             }
         }
 
-        return new FPlot(configPlotId, name, description, icon, configCategory, configWorld, configPlotArea);
+        return new FPlot(configPlotId, name, description, icon.toItemStack(), configCategory, configWorld, configPlotArea);
     }
 
     /**
@@ -168,8 +172,8 @@ public class FPlot extends Item {
         config.set(getConfigFPlotSection() + ".plotArea", plotArea != null ? plotArea.toString() : plotWorldName);
         config.set(getConfigFPlotSection() + ".icon.type", icon.getType().name());
 
-        if (icon.getItemMeta() instanceof SkullMeta meta) {
-            config.set(getConfigFPlotSection() + ".icon.player", meta.getOwnerProfile().getName());
+        if (icon.getItemMeta() instanceof SkullMeta) {
+            config.set(getConfigFPlotSection() + ".icon.player", icon.getItemMeta().getPersistentDataContainer().get(HeadCacheManager.KEY_HEAD, PersistentDataType.STRING));
         }
 
         config.set(getConfigFPlotSection() + ".category", category.getName());

@@ -1,6 +1,7 @@
 package fr.aerwyn81.featuredplots.handlers;
 
 import com.plotsquared.core.PlotSquared;
+import com.plotsquared.core.player.OfflinePlotPlayer;
 import com.plotsquared.core.player.PlotPlayer;
 import com.plotsquared.core.plot.Plot;
 import fr.aerwyn81.featuredplots.FeaturedPlots;
@@ -96,10 +97,22 @@ public class FPlotHandler {
      */
     public FPlot create(String name, @Nullable Plot plot, Category category) throws Exception {
         var icon = new ItemBuilder(Material.PLAYER_HEAD);
-        PlotPlayer<?> player = PlotSquared.platform().playerManager().getPlayerIfExists(plot.getOwnerAbs());
+        String playerName = "";
 
-        if (player != null) {
-            icon.setSkullOwner(player.getName());
+        PlotPlayer<?> plotPlayer = PlotSquared.platform().playerManager().getPlayerIfExists(plot.getOwnerAbs());
+
+        if (plotPlayer != null) {
+            playerName = plotPlayer.getName();
+        } else {
+            OfflinePlotPlayer player = PlotSquared.platform().playerManager().getOfflinePlayer(plot.getOwnerAbs());
+
+            if (player != null) {
+                playerName = player.getName();
+            }
+        }
+
+        if (!playerName.isEmpty()) {
+            icon.setSkullOwner(playerName).setPersistentDataContainer(HeadCacheManager.KEY_HEAD, playerName);
         }
 
         var fPlot = new FPlot(name, plot, category, HeadCacheManager.getHead(icon.toItemStack()));

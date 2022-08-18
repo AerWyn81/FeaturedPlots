@@ -1,6 +1,7 @@
 package fr.aerwyn81.featuredplots.managers;
 
 import com.plotsquared.core.PlotSquared;
+import com.plotsquared.core.player.OfflinePlotPlayer;
 import com.plotsquared.core.player.PlotPlayer;
 import com.plotsquared.core.plot.Plot;
 import fr.aerwyn81.featuredplots.FeaturedPlots;
@@ -153,9 +154,21 @@ public class FeaturedPlotsManager {
             throw new Exception("Plot location not found");
         }
 
-        PlotPlayer<?> plotPlayer = PlotSquared.platform().playerManager().getPlayerIfExists(plot.getOwnerAbs());
-        if (plotPlayer == null && !plot.hasOwner()) {
+        if (!plot.hasOwner()) {
             throw new Exception("Plot has no owner");
+        }
+
+        var playerName = "UnknownPlayer";
+        PlotPlayer<?> plotPlayer = PlotSquared.platform().playerManager().getPlayerIfExists(plot.getOwnerAbs());
+
+        if (plotPlayer != null) {
+            playerName = plotPlayer.getName();
+        } else {
+            OfflinePlotPlayer player = PlotSquared.platform().playerManager().getOfflinePlayer(plot.getOwnerAbs());
+
+            if (player != null) {
+                playerName = player.getName();
+            }
         }
 
         var plotFound = getPlotHandler().getPlotsById(plot.getId().toString());
@@ -165,7 +178,7 @@ public class FeaturedPlotsManager {
 
         var name = main.getLanguageHandler().getMessageWithoutColoring("Config.PlotDefaultName")
                 .replaceAll("%plotId%", plot.getId().toString())
-                .replaceAll("%player%", plotPlayer == null ? "UnknownPlayer" : plotPlayer.getName());
+                .replaceAll("%player%", playerName);
 
         var fPlot = fPlotHandler.create(name, plot, category);
         featuredPlots.get(category).add(fPlot);

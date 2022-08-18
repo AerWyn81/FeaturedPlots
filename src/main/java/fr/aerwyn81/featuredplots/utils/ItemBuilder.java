@@ -2,10 +2,12 @@ package fr.aerwyn81.featuredplots.utils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.profile.PlayerProfile;
 import org.bukkit.profile.PlayerTextures;
 
@@ -164,6 +166,19 @@ public class ItemBuilder {
     public ItemBuilder setLore(List<String> lore) {
         ItemMeta im = is.getItemMeta();
         im.setLore(lore);
+        is.setItemMeta(im);
+        return this;
+    }
+
+    /**
+     * Get the PersistentDataContainer for the item
+     *
+     * @param key   key for the PersistentDataContainer
+     * @param value {@link String} value
+     */
+    public ItemBuilder setPersistentDataContainer(NamespacedKey key, String value) {
+        ItemMeta im = is.getItemMeta();
+        im.getPersistentDataContainer().set(key, PersistentDataType.STRING, value);
         is.setItemMeta(im);
         return this;
     }

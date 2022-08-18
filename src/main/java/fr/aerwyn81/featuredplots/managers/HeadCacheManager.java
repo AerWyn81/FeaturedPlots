@@ -1,16 +1,22 @@
 package fr.aerwyn81.featuredplots.managers;
 
+import fr.aerwyn81.featuredplots.FeaturedPlots;
+import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.HashMap;
-import java.util.UUID;
 
 public class HeadCacheManager {
-    private static HashMap<UUID, ItemStack> headsCache;
+    public static NamespacedKey KEY_HEAD;
 
-    public static void initialise() {
+    private static HashMap<String, ItemStack> headsCache;
+
+    public static void initialise(FeaturedPlots main) {
         headsCache = new HashMap<>();
+
+        KEY_HEAD = new NamespacedKey(main, "PlayerName");
     }
 
     public static void clear() {
@@ -22,11 +28,13 @@ public class HeadCacheManager {
             return itemStack;
         }
 
-        if (headsCache.containsKey(meta.getOwnerProfile().getUniqueId())) {
-            return headsCache.get(meta.getOwnerProfile().getUniqueId());
+        var playerName = meta.getPersistentDataContainer().get(KEY_HEAD, PersistentDataType.STRING);
+
+        if (headsCache.containsKey(playerName)) {
+            return headsCache.get(playerName);
         }
 
-        headsCache.put(meta.getOwnerProfile().getUniqueId(), itemStack);
+        headsCache.put(playerName, itemStack);
         return itemStack;
     }
 }

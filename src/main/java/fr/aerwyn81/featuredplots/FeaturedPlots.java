@@ -66,12 +66,12 @@ public final class FeaturedPlots extends JavaPlugin {
         this.languageHandler = new LanguageHandler(this, configHandler.getLanguage());
         this.languageHandler.pushMessages();
 
+        HeadCacheManager.initialise(this);
+
         this.featuredPlotsManager = new FeaturedPlotsManager(this);
         this.featuredPlotsManager.loadStorage();
 
         this.guiManager = new GuiManager(this);
-
-        HeadCacheManager.initialise();
 
         getCommand("featuredplots").setExecutor(new FPCommandExecutor(this));
 
