@@ -13,6 +13,7 @@ Messages:
   CategoryNotExist: "%prefix% &cCategory &e%category% &cdoes not exist"
   PlotAddedCategory: "%prefix% &aPlot added to the &e%category% &acategory"
   FeaturedPlotsEmpty: "%prefix% &cThere's not featured plots yet"
+  Reload: "%prefix% &aReload complete!"
 
 Config:
   PlotDefaultName: "&8[&7%plotId%&8] | &3Plot of &e%player%"

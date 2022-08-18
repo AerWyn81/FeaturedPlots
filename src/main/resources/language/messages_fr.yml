@@ -13,6 +13,7 @@ Messages:
   CategoryNotExist: "%prefix% &cLa catégorie &e%category% &cn'existe pas"
   PlotAddedCategory: "%prefix% &aCette parcelle a été ajouté dans la catégorie &e%category%"
   FeaturedPlotsEmpty: "%prefix% &cIl n'y a pas encore de parcelles en vedette"
+  Reload: "%prefix% &aRechargement réussi"
 
 Config:
   PlotDefaultName: "&8[&7%plotId%&8] | &3Plot de &e%player%"
