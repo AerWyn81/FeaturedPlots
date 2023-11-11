@@ -4,20 +4,20 @@ plugins {
     id("net.minecrell.plugin-yml.bukkit") version "0.5.2"
 }
 
-version = "1.0.1"
+version = "1.5.0"
 
 repositories {
     mavenCentral()
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
-    maven("https://oss.sonatype.org/content/repositories/snapshots/")
     maven("https://repo.papermc.io/repository/maven-public/")
 }
 
 dependencies {
-    compileOnly("org.spigotmc:spigot-api:1.18.2-R0.1-SNAPSHOT")
-    implementation(platform("com.intellectualsites.bom:bom-1.18.x:1.12"))
-    compileOnly("com.plotsquared:PlotSquared-Core:6.9.3")
-    compileOnly("com.plotsquared:PlotSquared-Bukkit:6.9.3") { isTransitive = false }
+    compileOnly("org.spigotmc:spigot-api:1.20.2-R0.1-SNAPSHOT")
+    implementation(platform("com.intellectualsites.bom:bom-newest:1.39"))
+    compileOnly("com.intellectualsites.plotsquared:plotsquared-core")
+    compileOnly("com.intellectualsites.plotsquared:plotsquared-bukkit") { isTransitive = false }
+    implementation("org.apache.commons:commons-lang3:3.0")
 }
 
 tasks {

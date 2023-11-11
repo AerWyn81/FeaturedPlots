@@ -2,7 +2,7 @@ package fr.aerwyn81.featuredplots.utils.chat;
 
 import fr.aerwyn81.featuredplots.handlers.LanguageHandler;
 import net.md_5.bungee.api.chat.*;
-import org.apache.commons.lang.math.NumberUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 

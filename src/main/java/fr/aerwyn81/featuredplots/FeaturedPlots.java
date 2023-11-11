@@ -37,6 +37,7 @@ public final class FeaturedPlots extends JavaPlugin {
     public void onEnable() {
         instance = this;
         log = Bukkit.getConsoleSender();
+        HeadCacheManager.initialise(this);
 
         log.sendMessage(MessageUtils.colorize("&3&lF&beatured&2&lP&alots &einitializing..."));
 
@@ -65,8 +66,6 @@ public final class FeaturedPlots extends JavaPlugin {
 
         this.languageHandler = new LanguageHandler(this, configHandler.getLanguage());
         this.languageHandler.pushMessages();
-
-        HeadCacheManager.initialise(this);
 
         this.featuredPlotsManager = new FeaturedPlotsManager(this);
         this.featuredPlotsManager.loadStorage();
