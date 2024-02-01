@@ -23,7 +23,7 @@ public record CategoryCommands(FeaturedPlots main, LanguageHandler languageHandl
         if (args[1].equals("list")) {
             var categories = main.getFeaturedPlotsManager().getCategoryHandler().getCategories();
 
-            if (categories.size() == 0) {
+            if (categories.isEmpty()) {
                 sender.sendMessage(languageHandler.getMessage("Messages.CategoryListEmpty"));
             } else {
                 sender.sendMessage(languageHandler.getMessage("Messages.CategoryList") + categories.stream()

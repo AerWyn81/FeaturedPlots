@@ -4,7 +4,6 @@ import com.plotsquared.core.PlotAPI;
 import fr.aerwyn81.featuredplots.commands.FPCommandExecutor;
 import fr.aerwyn81.featuredplots.commands.list.explore.PSExploreCommand;
 import fr.aerwyn81.featuredplots.events.OnFPMenuClick;
-import fr.aerwyn81.featuredplots.events.OnWorldEvent;
 import fr.aerwyn81.featuredplots.handlers.ConfigHandler;
 import fr.aerwyn81.featuredplots.handlers.LanguageHandler;
 import fr.aerwyn81.featuredplots.managers.FeaturedPlotsManager;
@@ -76,7 +75,6 @@ public final class FeaturedPlots extends JavaPlugin {
 
         new PSExploreCommand(this);
 
-        Bukkit.getPluginManager().registerEvents(new OnWorldEvent(this), this);
         Bukkit.getPluginManager().registerEvents(new OnFPMenuClick(this, guiManager), this);
 
         log.sendMessage(MessageUtils.colorize("&3&lF&beatured&2&lP&alots &einitialized!"));

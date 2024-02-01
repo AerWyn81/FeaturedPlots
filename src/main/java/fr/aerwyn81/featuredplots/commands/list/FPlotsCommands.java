@@ -14,10 +14,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-@FPAnnotations(command = "plot", permission = "featuredplots.admin", isPlayerCommand = true, args = {"add", "edit"})
+@FPAnnotations(command = "plot", permission = "featuredplots.admin", isPlayerCommand = true, args = {"add"})
 public record FPlotsCommands(FeaturedPlots main, LanguageHandler languageHandler) implements Cmd {
 
-    private final static ArrayList<String> SUB_COMMANDS = new ArrayList<>(Arrays.asList("add", "edit"));
+    private final static ArrayList<String> SUB_COMMANDS = new ArrayList<>(Arrays.asList("add"));
 
     @Override
     public boolean perform(CommandSender sender, String[] args) {

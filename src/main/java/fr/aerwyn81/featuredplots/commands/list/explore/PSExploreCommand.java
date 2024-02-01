@@ -35,7 +35,7 @@ public class PSExploreCommand extends Command {
     @Override
     public CompletableFuture<Boolean> execute(PlotPlayer<?> player, String[] args, RunnableVal3<Command, Runnable, Runnable> confirm, RunnableVal2<Command, CommandResult> whenDone) throws CommandException {
         var featuredPlots = main.getFeaturedPlotsManager().getFeaturedPlots();
-        if (featuredPlots.keySet().size() == 0) {
+        if (featuredPlots.keySet().isEmpty()) {
             player.sendMessage(StaticCaption.of(languageHandler.getMessage("Messages.FeaturedPlotsEmpty")));
             return CompletableFuture.completedFuture(false);
         }

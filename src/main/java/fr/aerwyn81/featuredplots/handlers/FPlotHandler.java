@@ -49,8 +49,8 @@ public class FPlotHandler {
      * @return a {@link FPlot} object
      */
     @Nullable
-    public FPlot getPlotsById(String plotId) {
-        return getPlots().stream().filter(p -> p.getPlot().getId().toString().equals(plotId)).findFirst().orElse(null);
+    public FPlot getPlotsById(String plotId, String worldName) {
+        return getPlotsByWorld(worldName).stream().filter(p -> p.getPlotId().equals(plotId)).findFirst().orElse(null);
     }
 
     /**
@@ -60,7 +60,7 @@ public class FPlotHandler {
      * @return list of {@link FPlot} object
      */
     public ArrayList<FPlot> getPlotsByWorld(String worldName) {
-        return getPlots().stream().filter(p -> p.getConfigWorld().equals(worldName)).collect(Collectors.toCollection(ArrayList::new));
+        return getPlots().stream().filter(p -> p.getPlotWorld().equals(worldName)).collect(Collectors.toCollection(ArrayList::new));
     }
 
     /**
@@ -115,9 +115,9 @@ public class FPlotHandler {
             icon.setSkullOwner(playerName).setPersistentDataContainer(HeadCacheManager.KEY_HEAD, playerName);
         }
 
-        var fPlot = new FPlot(name, plot, category, HeadCacheManager.getHead(icon.toItemStack()));
+        var fPlot = new FPlot(name, category, HeadCacheManager.getHead(icon.toItemStack()), plot);
         category.getPlots().add(fPlot);
-        fPlot.addIntoConfig(manager.getConfig());
+        fPlot.addIntoConfig(manager.getConfig(), plot);
         manager.saveConfig();
 
         plots.add(fPlot);

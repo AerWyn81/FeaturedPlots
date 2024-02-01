@@ -15,28 +15,35 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.ArrayList;
 
 public class FPlot extends Item {
-    private Plot plot;
-    private String configPlotId;
+
+    private static final String CONFIG_PS_SUFFIX = ".ps";
+    private static final String CONFIG_FP_SUFFIX = ".fp";
+
+    private String plotCompleteId;
+
+    private String plotId;
+    private String plotWorld;
+    private String plotAreaId;
+    private String plotAreaWorld;
 
     private Category category;
     private String configCategory;
 
-    private String configPlotArea;
-    private String configWorld;
-
-    private FPlot(String configPlotId, String name, ArrayList<String> description, ItemStack icon, String configCategory, String configWorld, String configPlotArea) {
+    private FPlot(String plotCompleteId, String name, ArrayList<String> description, ItemStack icon, String configCategory, String plotId, String plotWorld, String plotAreaId, String plotAreaWorld) {
         super(name, description, icon);
 
-        this.configPlotId = configPlotId;
+        this.plotCompleteId = plotCompleteId;
+        this.plotId = plotId;
+        this.plotWorld = plotWorld;
+        this.plotAreaId = plotAreaId;
+        this.plotAreaWorld = plotAreaWorld;
+
         this.configCategory = configCategory;
-        this.configWorld = configWorld;
-        this.configPlotArea = configPlotArea;
     }
 
-    private FPlot(String name, ArrayList<String> description, ItemStack icon, Plot plot, Category category) {
+    private FPlot(String name, ArrayList<String> description, ItemStack icon, Category category) {
         super(name, description, icon);
 
-        this.plot = plot;
         this.category = category;
     }
 
@@ -44,11 +51,20 @@ public class FPlot extends Item {
      * Default constructor, initialize a plot by name, plot and category and default icon
      *
      * @param name     {@link String} of the plot
-     * @param plot     {@link Plot} PlotSquared plot
      * @param category {@link Category} of the plot
      */
-    public FPlot(String name, Plot plot, Category category, ItemStack icon) {
-        this(name, new ArrayList<>(), icon, plot, category);
+    public FPlot(String name, Category category, ItemStack icon, Plot plot) {
+        this(name, new ArrayList<>(), icon, category);
+
+        this.plotCompleteId = (plot.getArea() != null ? plot.getArea().getWorldName() : plot.getWorldName()) + ";" + plot.getId();
+        this.plotId = plot.getId().toString();
+        this.plotWorld = plot.getWorldName();
+
+        var plotArea = plot.getArea();
+        if (plotArea != null) {
+            this.plotAreaId = plotArea.getId() != null ? plotArea.getId() : "";
+            this.plotAreaWorld = plotArea.getWorldName();
+        }
     }
 
     /**
@@ -58,7 +74,7 @@ public class FPlot extends Item {
      */
     @Override
     public String getGuiKey() {
-        return plot.getId().toString();
+        return plotCompleteId;
     }
 
     /**
@@ -81,16 +97,12 @@ public class FPlot extends Item {
         return MessageUtils.colorize(description);
     }
 
-    public String getConfigPlotId() {
-        return configPlotId;
+    public String getPlotId() {
+        return plotId;
     }
 
-    public Plot getPlot() {
-        return plot;
-    }
-
-    public void setPlot(Plot plot) {
-        this.plot = plot;
+    public String getPlotCompleteId() {
+        return plotCompleteId;
     }
 
     public String getConfigCategory() {
@@ -110,12 +122,16 @@ public class FPlot extends Item {
         this.category = category;
     }
 
-    public String getConfigWorld() {
-        return configWorld;
+    public String getPlotWorld() {
+        return plotWorld;
     }
 
-    public String getConfigPlotArea() {
-        return configPlotArea;
+    public String getPlotAreaId() {
+        return plotAreaId;
+    }
+
+    public String getPlotAreaWorld() {
+        return plotAreaWorld;
     }
 
     /**
@@ -130,30 +146,33 @@ public class FPlot extends Item {
             throw new Exception("Content of section cannot be empty");
         }
 
-        var configPlotId = section.getName();
-        if (configPlotId.isEmpty()) {
+        var plotCompleteId = section.getName();
+        if (plotCompleteId.isEmpty()) {
             throw new Exception("PlotId cannot be empty");
         }
 
-        var name = section.getString("name");
-        var description = new ArrayList<>(section.getStringList("description"));
-        var configWorld = section.getString("world");
-        var configPlotArea = section.getString("plotArea");
-        var configCategory = section.getString("category");
+        var configId = section.getString(CONFIG_PS_SUFFIX + ".id");
+        var configWorld = section.getString(CONFIG_PS_SUFFIX + ".world");
+        var configPlotAreaId = section.getString(CONFIG_PS_SUFFIX + ".plotArea.id");
+        var configPlotAreaWorld = section.getString(CONFIG_PS_SUFFIX + ".plotArea.worldName", "");
 
-        var icon = new ItemBuilder(Material.valueOf(section.getString("icon.type", Material.PLAYER_HEAD.name())));
+        var name = section.getString(CONFIG_FP_SUFFIX + ".name");
+        var description = new ArrayList<>(section.getStringList(CONFIG_FP_SUFFIX + ".description"));
+        var configCategory = section.getString(CONFIG_FP_SUFFIX + ".category");
+
+        var icon = new ItemBuilder(Material.valueOf(section.getString(CONFIG_FP_SUFFIX + ".icon.type", Material.PLAYER_HEAD.name())));
 
         if (icon.toItemStack().getType() == Material.PLAYER_HEAD) {
-            if (section.contains("icon.player")) {
-                var playerName = section.getString("icon.player", "");
+            if (section.contains(CONFIG_FP_SUFFIX + ".icon.player")) {
+                var playerName = section.getString(CONFIG_FP_SUFFIX + ".icon.player", "");
                 icon = icon.setSkullOwner(playerName).setPersistentDataContainer(HeadCacheManager.KEY_HEAD, playerName);
-            } else if (section.contains("icon.textureId")) {
-                var textureId = section.getString("icon.textureId", "");
+            } else if (section.contains(CONFIG_FP_SUFFIX + ".icon.textureId")) {
+                var textureId = section.getString(CONFIG_FP_SUFFIX + ".icon.textureId", "");
                 icon = icon.setSkullTexture(textureId).setPersistentDataContainer(HeadCacheManager.KEY_HEAD, textureId);
             }
         }
 
-        return new FPlot(configPlotId, name, description, icon.toItemStack(), configCategory, configWorld, configPlotArea);
+        return new FPlot(plotCompleteId, name, description, icon.toItemStack(), configCategory, configId, configWorld, configPlotAreaId, configPlotAreaWorld);
     }
 
     /**
@@ -162,21 +181,33 @@ public class FPlot extends Item {
      *
      * @param config {@link FileConfiguration} of the plugin
      */
-    public void addIntoConfig(FileConfiguration config) {
+    public void addIntoConfig(FileConfiguration config, Plot plot) {
+        var psSection = getConfigFPlotSection() + CONFIG_PS_SUFFIX;
+        var fpSection = getConfigFPlotSection() + CONFIG_FP_SUFFIX;
+
         var plotWorldName = plot.getWorldName();
         var plotArea = plot.getArea();
 
-        config.set(getConfigFPlotSection() + ".name", name);
-        config.set(getConfigFPlotSection() + ".description", description);
-        config.set(getConfigFPlotSection() + ".world", plotWorldName);
-        config.set(getConfigFPlotSection() + ".plotArea", plotArea != null ? plotArea.toString() : plotWorldName);
-        config.set(getConfigFPlotSection() + ".icon.type", icon.getType().name());
+        config.set(psSection + ".id", plot.getId().toString());
+        config.set(psSection + ".world", plotWorldName);
 
-        if (icon.getItemMeta() instanceof SkullMeta) {
-            config.set(getConfigFPlotSection() + ".icon.player", icon.getItemMeta().getPersistentDataContainer().get(HeadCacheManager.KEY_HEAD, PersistentDataType.STRING));
+        if (plotArea != null) {
+            if (plotArea.getId() != null) {
+                config.set(psSection + ".plotArea.id", plotArea.getWorldName());
+            }
+
+            config.set(psSection + ".plotArea.worldName", plotArea.getWorldName());
         }
 
-        config.set(getConfigFPlotSection() + ".category", category.getName());
+        config.set(fpSection + ".name", name);
+        config.set(fpSection + ".description", description);
+        config.set(fpSection + ".icon.type", icon.getType().name());
+
+        if (icon.getItemMeta() instanceof SkullMeta) {
+            config.set(fpSection + ".icon.player", icon.getItemMeta().getPersistentDataContainer().get(HeadCacheManager.KEY_HEAD, PersistentDataType.STRING));
+        }
+
+        config.set(fpSection + ".category", category.getName());
     }
 
     /**
@@ -195,6 +226,6 @@ public class FPlot extends Item {
      * @return {@link String} config plotId root section
      */
     private String getConfigFPlotSection() {
-        return "plots." + plot.getId();
+        return "plots." + plotCompleteId;
     }
 }

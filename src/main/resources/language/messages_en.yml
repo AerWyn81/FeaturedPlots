@@ -14,6 +14,7 @@ Messages:
   PlotAddedCategory: "%prefix% &aPlot added to the &e%category% &acategory"
   FeaturedPlotsEmpty: "%prefix% &cThere's not featured plots yet"
   Reload: "%prefix% &aReload complete!"
+  PlotNotFound: "%prefix% &cUnknown plot &e%plot%&c!"
 
 Config:
   PlotDefaultName: "&8[&7%plotId%&8] | &3Plot of &e%player%"

@@ -19,7 +19,7 @@ public record ExploreCommand(FeaturedPlots main, LanguageHandler languageHandler
         var player = (Player) sender;
 
         var featuredPlots = main.getFeaturedPlotsManager().getFeaturedPlots();
-        if (featuredPlots.keySet().size() == 0) {
+        if (featuredPlots.keySet().isEmpty()) {
             player.sendMessage(languageHandler.getMessage("Messages.FeaturedPlotsEmpty"));
             return true;
         }

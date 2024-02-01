@@ -14,6 +14,7 @@ Messages:
   PlotAddedCategory: "%prefix% &aCette parcelle a été ajouté dans la catégorie &e%category%"
   FeaturedPlotsEmpty: "%prefix% &cIl n'y a pas encore de parcelles en vedette"
   Reload: "%prefix% &aRechargement réussi"
+  PlotNotFound: "%prefix% &cParcelle &e%plot% &cinconnue"
 
 Config:
   PlotDefaultName: "&8[&7%plotId%&8] | &3Plot de &e%player%"

@@ -171,7 +171,7 @@ public class FeaturedPlotsManager {
             }
         }
 
-        var plotFound = getPlotHandler().getPlotsById(plot.getId().toString());
+        var plotFound = getPlotHandler().getPlotsById(plot.getId().toString(), plot.getWorldName());
         if (plotFound != null) {
             throw new Exception("This plot already exist in category " + plotFound.getCategory().getName());
         }

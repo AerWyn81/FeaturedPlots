@@ -2,6 +2,7 @@ package fr.aerwyn81.featuredplots.managers;
 
 import com.plotsquared.bukkit.util.BukkitUtil;
 import com.plotsquared.core.events.TeleportCause;
+import com.plotsquared.core.plot.Plot;
 import fr.aerwyn81.featuredplots.FeaturedPlots;
 import fr.aerwyn81.featuredplots.data.Category;
 import fr.aerwyn81.featuredplots.data.FPlot;
@@ -48,14 +49,14 @@ public class GuiManager {
         for (int i = 0; i < items.size(); i++) {
             var item = items.get(i);
 
-            var icon = new ItemBuilder(item.getIcon())
+            var icon = item.getIcon().getType() == Material.PLAYER_HEAD ? HeadCacheManager.getHead(item.getIcon()) : item.getIcon();
+
+            var iconGui = new ItemBuilder(icon.clone())
                     .setName(item.getNameColorized())
                     .setLore(item.getDescriptionColorized())
                     .toItemStack();
 
-            var itemGUI = new ItemGUI(icon.getType() == Material.PLAYER_HEAD ?
-                    HeadCacheManager.getHead(icon) :
-                    icon, item instanceof FPlot || item instanceof Category category && category.getPlots().size() > 0);
+            var itemGUI = new ItemGUI(iconGui, item instanceof FPlot || item instanceof Category category && !category.getPlots().isEmpty());
 
             if (item instanceof Category category) {
                 itemGUI.setIconBlocked(configHandler.getCategoryEmptyIcon()
@@ -64,7 +65,14 @@ public class GuiManager {
                         .toItemStack());
                 itemGUI.addOnClickEvent(event -> open((Player) event.getWhoClicked(), GuiType.Plots, new ArrayList<>(category.getPlots())));
             } else if (item instanceof FPlot fPlot) {
-                itemGUI.addOnClickEvent(event -> fPlot.getPlot().teleportPlayer(BukkitUtil.adapt((Player) event.getWhoClicked()), TeleportCause.COMMAND_VISIT, (result) -> {
+                var psPlot = Plot.fromString(null, fPlot.getPlotCompleteId());
+                if (psPlot == null) {
+                    p.sendMessage(languageHandler.getMessage("Messages.PlotNotFound")
+                            .replaceAll("%plot%", fPlot.getPlotCompleteId()));
+                    return;
+                }
+
+                itemGUI.addOnClickEvent(event -> psPlot.teleportPlayer(BukkitUtil.adapt((Player) event.getWhoClicked()), TeleportCause.COMMAND_VISIT, (result) -> {
                 }));
             }
 
