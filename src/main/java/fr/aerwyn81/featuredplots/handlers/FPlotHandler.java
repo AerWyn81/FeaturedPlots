@@ -95,32 +95,42 @@ public class FPlotHandler {
      * @return fPlot {@link FPlot} FPlot object
      * @throws Exception if there is a storage issue
      */
-    public FPlot create(String name, @Nullable Plot plot, Category category) throws Exception {
-        var icon = new ItemBuilder(Material.PLAYER_HEAD);
-        String playerName = "";
+    public FPlot create(String name, Plot plot, Category category) throws Exception {
+        FPlot fPlot;
 
-        PlotPlayer<?> plotPlayer = PlotSquared.platform().playerManager().getPlayerIfExists(plot.getOwnerAbs());
+        var existingPlot = plots.stream().filter(p -> p.getPlotId().equals(plot.getId().toString())).findFirst();
 
-        if (plotPlayer != null) {
-            playerName = plotPlayer.getName();
+        if (existingPlot.isPresent()) {
+            fPlot = existingPlot.get();
+            fPlot.addCategory(category);
         } else {
-            OfflinePlotPlayer player = PlotSquared.platform().playerManager().getOfflinePlayer(plot.getOwnerAbs());
+            var icon = new ItemBuilder(Material.PLAYER_HEAD);
+            String playerName = "";
 
-            if (player != null) {
-                playerName = player.getName();
+            PlotPlayer<?> plotPlayer = PlotSquared.platform().playerManager().getPlayerIfExists(plot.getOwnerAbs());
+
+            if (plotPlayer != null) {
+                playerName = plotPlayer.getName();
+            } else {
+                OfflinePlotPlayer player = PlotSquared.platform().playerManager().getOfflinePlayer(plot.getOwnerAbs());
+
+                if (player != null) {
+                    playerName = player.getName();
+                }
             }
+
+            if (!playerName.isEmpty()) {
+                icon.setSkullOwner(playerName).setPersistentDataContainer(HeadCacheManager.KEY_HEAD, playerName);
+            }
+
+            fPlot = new FPlot(name, HeadCacheManager.getHead(icon.toItemStack()), plot);
+            fPlot.addCategory(category);
+            category.getPlots().add(fPlot);
+            plots.add(fPlot);
         }
 
-        if (!playerName.isEmpty()) {
-            icon.setSkullOwner(playerName).setPersistentDataContainer(HeadCacheManager.KEY_HEAD, playerName);
-        }
-
-        var fPlot = new FPlot(name, category, HeadCacheManager.getHead(icon.toItemStack()), plot);
-        category.getPlots().add(fPlot);
         fPlot.addIntoConfig(manager.getConfig(), plot);
         manager.saveConfig();
-
-        plots.add(fPlot);
 
         return fPlot;
     }

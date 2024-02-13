@@ -75,18 +75,19 @@ public class FeaturedPlotsManager {
         this.featuredPlots.clear();
 
         for (FPlot p : getPlotHandler().getPlots()) {
-            var category = getCategoryHandler().getCategoryByName(p.getConfigCategory());
-            if (category == null) {
-                continue;
+            for (var cat : p.getConfigCategories()) {
+                var category = getCategoryHandler().getCategoryByName(cat);
+                if (category != null) {
+                    p.addCategory(category);
+
+                    category.getPlots().add(p);
+
+                    if (!featuredPlots.containsKey(category))
+                        featuredPlots.put(category, new ArrayList<>());
+
+                    featuredPlots.get(category).add(p);
+                }
             }
-
-            p.setCategory(category);
-            category.getPlots().add(p);
-
-            if (!featuredPlots.containsKey(category))
-                featuredPlots.put(category, new ArrayList<>());
-
-            featuredPlots.get(category).add(p);
         }
 
         getCategoryHandler().getCategories().stream()
@@ -172,8 +173,8 @@ public class FeaturedPlotsManager {
         }
 
         var plotFound = getPlotHandler().getPlotsById(plot.getId().toString(), plot.getWorldName());
-        if (plotFound != null) {
-            throw new Exception("This plot already exist in category " + plotFound.getCategory().getName());
+        if (plotFound != null && plotFound.getCategories().contains(category)) {
+            throw new Exception("This plot already has category " + category.getName());
         }
 
         var name = main.getLanguageHandler().getMessageWithoutColoring("Config.PlotDefaultName")
@@ -192,7 +193,10 @@ public class FeaturedPlotsManager {
      */
     public void deletePlot(FPlot fPlot) throws Exception {
         fPlotHandler.delete(fPlot);
-        featuredPlots.get(fPlot.getCategory()).remove(fPlot);
+
+        for (var category : fPlot.getCategories()) {
+            featuredPlots.get(category).remove(fPlot);
+        }
     }
 
     //endregion

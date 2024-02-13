@@ -13,6 +13,8 @@ import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class FPlot extends Item {
 
@@ -26,10 +28,10 @@ public class FPlot extends Item {
     private String plotAreaId;
     private String plotAreaWorld;
 
-    private Category category;
-    private String configCategory;
+    private final List<Category> categories;
+    private List<String> configCategories;
 
-    private FPlot(String plotCompleteId, String name, ArrayList<String> description, ItemStack icon, String configCategory, String plotId, String plotWorld, String plotAreaId, String plotAreaWorld) {
+    private FPlot(String plotCompleteId, String name, ArrayList<String> description, ItemStack icon, List<String> configCategories, String plotId, String plotWorld, String plotAreaId, String plotAreaWorld) {
         super(name, description, icon);
 
         this.plotCompleteId = plotCompleteId;
@@ -38,23 +40,23 @@ public class FPlot extends Item {
         this.plotAreaId = plotAreaId;
         this.plotAreaWorld = plotAreaWorld;
 
-        this.configCategory = configCategory;
+        this.categories = new ArrayList<>();
+        this.configCategories = configCategories;
     }
 
-    private FPlot(String name, ArrayList<String> description, ItemStack icon, Category category) {
+    private FPlot(String name, ArrayList<String> description, ItemStack icon, ArrayList<Category> categories) {
         super(name, description, icon);
 
-        this.category = category;
+        this.categories = categories;
     }
 
     /**
      * Default constructor, initialize a plot by name, plot and category and default icon
      *
      * @param name     {@link String} of the plot
-     * @param category {@link Category} of the plot
      */
-    public FPlot(String name, Category category, ItemStack icon, Plot plot) {
-        this(name, new ArrayList<>(), icon, category);
+    public FPlot(String name, ItemStack icon, Plot plot) {
+        this(name, new ArrayList<>(), icon, new ArrayList<>());
 
         this.plotCompleteId = (plot.getArea() != null ? plot.getArea().getWorldName() : plot.getWorldName()) + ";" + plot.getId();
         this.plotId = plot.getId().toString();
@@ -105,21 +107,25 @@ public class FPlot extends Item {
         return plotCompleteId;
     }
 
-    public String getConfigCategory() {
-        return configCategory;
+    public List<String> getConfigCategories() {
+        return configCategories;
     }
 
     /**
-     * Used to retrieve the category of the plot
+     * Used to retrieve categories of the plot
      *
-     * @return the plot {@link Category} (or {@link Category#defaultCategory()} if category is not found)
+     * @return the plot {@link List<Category>} (or {@link Category#defaultCategory()} if category is not found)
      */
-    public Category getCategory() {
-        return category != null ? category : Category.defaultCategory();
+    public List<Category> getCategories() {
+        return categories.isEmpty() ? List.of(Category.defaultCategory()) : categories;
     }
 
-    public void setCategory(Category category) {
-        this.category = category;
+    public void addCategory(Category category) {
+        this.categories.add(category);
+    }
+
+    public void removeCategory(Category category) {
+        this.categories.remove(category);
     }
 
     public String getPlotWorld() {
@@ -158,7 +164,7 @@ public class FPlot extends Item {
 
         var name = section.getString(CONFIG_FP_SUFFIX + ".name");
         var description = new ArrayList<>(section.getStringList(CONFIG_FP_SUFFIX + ".description"));
-        var configCategory = section.getString(CONFIG_FP_SUFFIX + ".category");
+        var configCategories = section.getStringList(CONFIG_FP_SUFFIX + ".categories");
 
         var icon = new ItemBuilder(Material.valueOf(section.getString(CONFIG_FP_SUFFIX + ".icon.type", Material.PLAYER_HEAD.name())));
 
@@ -172,7 +178,7 @@ public class FPlot extends Item {
             }
         }
 
-        return new FPlot(plotCompleteId, name, description, icon.toItemStack(), configCategory, configId, configWorld, configPlotAreaId, configPlotAreaWorld);
+        return new FPlot(plotCompleteId, name, description, icon.toItemStack(), configCategories, configId, configWorld, configPlotAreaId, configPlotAreaWorld);
     }
 
     /**
@@ -207,7 +213,7 @@ public class FPlot extends Item {
             config.set(fpSection + ".icon.player", icon.getItemMeta().getPersistentDataContainer().get(HeadCacheManager.KEY_HEAD, PersistentDataType.STRING));
         }
 
-        config.set(fpSection + ".category", category.getName());
+        config.set(fpSection + ".categories", categories.stream().map(Item::getName).collect(Collectors.toList()));
     }
 
     /**
