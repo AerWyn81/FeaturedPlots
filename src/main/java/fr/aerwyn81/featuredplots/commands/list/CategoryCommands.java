@@ -9,7 +9,6 @@ import org.bukkit.command.CommandSender;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.stream.Collectors;
 
 @FPAnnotations(command = "category", permission = "featuredplots.admin", args = {"create", "delete", "edit", "list"})
@@ -49,14 +48,15 @@ public record CategoryCommands(FeaturedPlots main, LanguageHandler languageHandl
                             .replaceAll("%category%", name));
                 }
                 case "delete" -> {
-                    var category = main.getFeaturedPlotsManager().getCategoryHandler().getCategoryByName(name);
-                    if (category == null) {
+                    var optCategory = main.getFeaturedPlotsManager().getCategoryHandler().getCategoryByName(name);
+                    if (optCategory.isEmpty()) {
                         sender.sendMessage(languageHandler.getMessage("Messages.CategoryNotExist")
                                 .replaceAll("%category%", name));
                         return true;
                     }
 
-                    int plotCount = category.getPlots().size();
+                    var category = optCategory.get();
+                    var plotCount = category.getPlots().size();
 
                     if (args.length != 4 && plotCount > 0) {
                         sender.sendMessage(languageHandler.getMessage("Messages.CategoryDeleteConfirmation")
@@ -92,9 +92,6 @@ public record CategoryCommands(FeaturedPlots main, LanguageHandler languageHandl
                     .filter(arg -> arg.startsWith(args[2]))
                     .collect(Collectors.toCollection(ArrayList::new));
         }
-
-        if (args.length == 4 && !args[2].isEmpty() && args[1].equals("delete"))
-            return new ArrayList<>(Collections.singletonList(CONFIRM_ARG));
 
         return new ArrayList<>();
     }

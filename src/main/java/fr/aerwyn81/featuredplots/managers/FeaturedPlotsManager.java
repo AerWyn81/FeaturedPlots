@@ -76,8 +76,10 @@ public class FeaturedPlotsManager {
 
         for (FPlot p : getPlotHandler().getPlots()) {
             for (var cat : p.getConfigCategories()) {
-                var category = getCategoryHandler().getCategoryByName(cat);
-                if (category != null) {
+                var optCategory = getCategoryHandler().getCategoryByName(cat);
+                if (optCategory.isPresent()) {
+                    var category = optCategory.get();
+
                     p.addCategory(category);
 
                     category.getPlots().add(p);
@@ -108,7 +110,7 @@ public class FeaturedPlotsManager {
             throw new Exception("Category name cannot be empty");
         }
 
-        if (getCategoryHandler().getCategoryByName(name) != null) {
+        if (getCategoryHandler().getCategoryByName(name).isPresent()) {
             throw new Exception("Category " + name + " already exist");
         }
 
@@ -127,7 +129,7 @@ public class FeaturedPlotsManager {
 
         category.getPlots().forEach(p -> {
             try {
-                deletePlot(p);
+                deletePlot(p, category);
             } catch (Exception e) {
                 hasDeletionError.set(true);
             }
@@ -172,8 +174,8 @@ public class FeaturedPlotsManager {
             }
         }
 
-        var plotFound = getPlotHandler().getPlotsById(plot.getId().toString(), plot.getWorldName());
-        if (plotFound != null && plotFound.getCategories().contains(category)) {
+        var optFPlot = getPlotHandler().getPlotsById(plot.getId().toString(), plot.getWorldName());
+        if (optFPlot.isPresent() && optFPlot.get().getCategories().contains(category)) {
             throw new Exception("This plot already has category " + category.getName());
         }
 
@@ -189,14 +191,35 @@ public class FeaturedPlotsManager {
      * Method to use to delete a {@link FPlot}
      *
      * @param fPlot {@link FPlot}
-     * @throws Exception if there is an issue with the deletion (category, storage...)
+     * @throws RuntimeException if there is an issue with the deletion (category, storage...)
      */
-    public void deletePlot(FPlot fPlot) throws Exception {
-        fPlotHandler.delete(fPlot);
+    public void deletePlot(FPlot fPlot) throws RuntimeException {
+        try {
+            fPlotHandler.delete(fPlot);
+        } catch (Exception ex) {
+            throw new RuntimeException("Error deleting plot " + fPlot.getPlotId() + " in config: " + ex.getMessage());
+        }
 
         for (var category : fPlot.getCategories()) {
             featuredPlots.get(category).remove(fPlot);
         }
+    }
+
+    /**
+     * Method to use to delete a {@link FPlot} in category
+     *
+     * @param fPlot    {@link FPlot}
+     * @param category {@link Category}
+     * @throws RuntimeException if there is an issue with the deletion (category, storage...)
+     */
+    public void deletePlot(FPlot fPlot, Category category) throws RuntimeException {
+        try {
+            fPlotHandler.delete(fPlot, category);
+        } catch (Exception ex) {
+            throw new RuntimeException("Error deleting plot " + fPlot.getPlotId() + " in category " + category.getName() + " in config: " + ex.getMessage());
+        }
+
+        featuredPlots.get(category).remove(fPlot);
     }
 
     //endregion

@@ -199,10 +199,44 @@ public class FPlot extends Item {
 
         if (plotArea != null) {
             if (plotArea.getId() != null) {
-                config.set(psSection + ".plotArea.id", plotArea.getWorldName());
+                config.set(psSection + ".plotArea.id", plotArea.getId());
             }
 
             config.set(psSection + ".plotArea.worldName", plotArea.getWorldName());
+        }
+
+        config.set(fpSection + ".name", name);
+        config.set(fpSection + ".description", description);
+        config.set(fpSection + ".icon.type", icon.getType().name());
+
+        if (icon.getItemMeta() instanceof SkullMeta) {
+            config.set(fpSection + ".icon.player", icon.getItemMeta().getPersistentDataContainer().get(HeadCacheManager.KEY_HEAD, PersistentDataType.STRING));
+        }
+
+        config.set(fpSection + ".categories", categories.stream().map(Item::getName).collect(Collectors.toList()));
+    }
+
+    /**
+     * Save plot in config
+     *
+     * @param config {@link FileConfiguration} of the plugin
+     */
+    public void saveInConfig(FileConfiguration config) {
+        var psSection = getConfigFPlotSection() + CONFIG_PS_SUFFIX;
+        var fpSection = getConfigFPlotSection() + CONFIG_FP_SUFFIX;
+
+        var plotWorldName = plotWorld;
+        var plotArea = plotAreaWorld;
+
+        config.set(psSection + ".id", plotCompleteId);
+        config.set(psSection + ".world", plotWorldName);
+
+        if (plotArea != null) {
+            if (plotWorldName != null) {
+                config.set(psSection + ".plotArea.id", plotAreaId);
+            }
+
+            config.set(psSection + ".plotArea.worldName", plotWorldName);
         }
 
         config.set(fpSection + ".name", name);

@@ -7,6 +7,7 @@ import fr.aerwyn81.featuredplots.utils.chat.MessageUtils;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class CategoryHandler {
@@ -47,8 +48,8 @@ public class CategoryHandler {
      *
      * @return a {@link Category} object
      */
-    public Category getCategoryByName(String name) {
-        return getCategories().stream().filter(c -> c.getName().equals(name)).findFirst().orElse(null);
+    public Optional<Category> getCategoryByName(String name) {
+        return getCategories().stream().filter(c -> c.getName().equals(name)).findFirst();
     }
 
     /**

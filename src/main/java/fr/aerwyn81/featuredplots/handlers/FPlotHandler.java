@@ -14,8 +14,8 @@ import fr.aerwyn81.featuredplots.utils.chat.MessageUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class FPlotHandler {
@@ -48,9 +48,8 @@ public class FPlotHandler {
      * @param plotId {@link String} PlotSquared plotId
      * @return a {@link FPlot} object
      */
-    @Nullable
-    public FPlot getPlotsById(String plotId, String worldName) {
-        return getPlotsByWorld(worldName).stream().filter(p -> p.getPlotId().equals(plotId)).findFirst().orElse(null);
+    public Optional<FPlot> getPlotsById(String plotId, String worldName) {
+        return getPlotsByWorld(worldName).stream().filter(p -> p.getPlotId().equals(plotId)).findFirst();
     }
 
     /**
@@ -146,5 +145,17 @@ public class FPlotHandler {
         manager.saveConfig();
 
         plots.remove(fPlot);
+    }
+
+    /**
+     * Used to remove a {@link Category} in {@link FPlot}
+     *
+     * @param fPlot {@link FPlot} FPlot to delete
+     * @throws Exception if there is a storage issue
+     */
+    public void delete(FPlot fPlot, Category category) throws Exception {
+        fPlot.removeCategory(category);
+        fPlot.saveInConfig(manager.getConfig());
+        manager.saveConfig();
     }
 }
