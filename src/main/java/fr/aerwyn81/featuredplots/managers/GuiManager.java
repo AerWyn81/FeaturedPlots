@@ -59,7 +59,7 @@ public class GuiManager {
             var itemGUI = new ItemGUI(iconGui, item instanceof FPlot || item instanceof Category category && !category.getPlots().isEmpty());
 
             if (item instanceof Category category) {
-                itemGUI.setIconBlocked(configHandler.getCategoryEmptyIcon()
+                itemGUI.setIconBlocked(new ItemBuilder(item.getIcon())
                         .setName(item.getNameColorized() + languageHandler.getMessage("Gui.EmptyCategory"))
                         .setLore(item.getDescriptionColorized())
                         .toItemStack());
